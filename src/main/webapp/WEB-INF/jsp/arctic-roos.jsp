@@ -17,29 +17,15 @@
         <meta http-equiv="X-UA-Compatible" content="IE=IE8" >
         <!--script type="text/javascript" src="javascript/googleAnalyticsStatistics.js"></script -->
 
-        <!-- OpenLayers resources -->
-        <link rel="stylesheet" type="text/css" href="externals/openlayers/theme/default/style.css">
-        <script type="text/javascript" src="script/OpenLayers.js"></script>
-
-        <!-- GeoExt resources -->
-        <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/popup.css">
-        <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/layerlegend.css">
-        <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/gxtheme-gray.css">
-        <script type="text/javascript" src="script/GeoExt.js"></script>
 
         <!-- gxp resources -->
         <link rel="stylesheet" type="text/css" href="externals/gxp/src/theme/all.css">
-        <script type="text/javascript" src="script/gxp.js"></script>
-
-        <!-- proj4js resources -->
-<!--         <script type="text/javascript" src="javascript/proj4js-compressed.js"></script> -->
 
         <!-- GeoExplorer resources -->
         <link rel="stylesheet" type="text/css" href="theme/app/geoexplorer.css" />
         <!--[if IE]><link rel="stylesheet" type="text/css" href="theme/app/ie.css"/><![endif]-->
         <link rel="stylesheet" type="text/css" href="theme/ux/colorpicker/color-picker.ux.css" />
         <script type="text/javascript" src="script/GeoExplorer.js"></script>
-        <script type="text/javascript" src="script/ux.js"></script>
         
         <script type="text/javascript" src="javascript/arctic_roos.js"></script>
 
