@@ -111,6 +111,16 @@
                                       	{layers: "geonorge:geonorge_norge_skyggerelieff", format: "image/jpeg", transparent: true, isBaseLayer: true},
                                       	{singleTile:false}
                                 ]                            
+                            }, {
+                                source: "ol",
+                                type: "OpenLayers.Layer.WMS",
+                                group: "background",
+                                args: [
+                                      	"Europa og Gebco",
+                                      	"http://maps.imr.no/geoserver/gwc/service/wms",
+                                      	{layers: "barents_watch_WMS", format: "image/jpeg", transparent: true, isBaseLayer: true}
+                                      	,{singleTile:false}
+                                ]
                             }, {                            	
                                 source: "ol",
                                 type: "OpenLayers.Layer.WMS",
@@ -121,22 +131,52 @@
                                       	{layers: "geonorge_europa_hvit_bakgrunn",format: "image/jpeg", transparent: true, isBaseLayer: true}
                                       	,{singleTile:false}
                                 ]
-                            }, {
-                               source: "ol",
-                               type: "OpenLayers.Layer.WMS",
-                               group: "background",
-                               args: [
-                                     	"Europa og Gebco",
-                                     	"http://maps.imr.no/geoserver/gwc/service/wms",
-                                     	{layers: "barents_watch_WMS", format: "image/jpeg", transparent: true, isBaseLayer: true}
-                                     	,{singleTile:false}
-                               ]
-                           }	      
+                            }      
                         ],
                         center: [1088474,7489849],
                         zoom: 2
                     }
                 });
+                
+                app.on("ready", function() {
+                	
+                    var treeRoot = Ext.ComponentMgr.all.find(function(c) {
+                        return c instanceof Ext.tree.TreePanel;
+                    });
+                    
+                    treeRoot.getRootNode().appendChild(new Ext.tree.AsyncTreeNode({
+                        text: 'arctic-roos',
+                        loader: new Ext.tree.TreeLoader({url: 'spring/getChildNodes'})
+                    }));
+                    treeRoot.on('click', function(record, view, item, index, evt, eOpts) {
+                		if (record.leaf) {
+                            Ext.Ajax.request({
+                            	url: 'spring/getDepthAndTime?parameter_id='+record.id+"&language=en",
+                                success: function(objServerResponse) {
+                                	var responseText = objServerResponse.responseText;
+                                    Ext.MessageBox.show({title:'NorMar',msg: responseText,minWidth:600}); 
+                                    
+                                    disableCheckboxIfOnlyOneOption();
+                            	}
+                            });       
+                            return;
+                		} else {
+        					Ext.Ajax.request({
+                            	url: 'spring/getAggregateGroups?parameter_id='+record.id+"&language=en",
+                                success: function(objServerResponse) {
+                                	var responseText = objServerResponse.responseText;
+            	                	var responseText = 
+            	                		responseText.replace("display:none;", ";");
+        							   
+                                    var msgBox = Ext.MessageBox.show({title:'NorMar',msg:responseText,minWidth:600,shadow:true});
+                                    
+                                    disableCheckboxIfOnlyOneOption();
+                            	}        
+                            });
+        					return;
+                		}
+                	});                   
+                });            
             }
         </script>
     </head>
