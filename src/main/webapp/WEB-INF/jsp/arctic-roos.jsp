@@ -17,7 +17,9 @@
         <meta http-equiv="X-UA-Compatible" content="IE=IE8" >
         <!--script type="text/javascript" src="javascript/googleAnalyticsStatistics.js"></script -->
 
-
+	    <script type="text/javascript" src="javascript/jquery-1.6.2.min.js"></script>    	
+	    <script type="text/javascript">jQuery.noConflict();</script>
+	    
         <!-- gxp resources -->
         <link rel="stylesheet" type="text/css" href="externals/gxp/src/theme/all.css">
 
@@ -27,7 +29,9 @@
         <link rel="stylesheet" type="text/css" href="theme/ux/colorpicker/color-picker.ux.css" />
         <script type="text/javascript" src="script/GeoExplorer.js"></script>
         
-        <script type="text/javascript" src="javascript/arctic_roos.js"></script>
+        <link rel="stylesheet" type="text/css" href="javascript/ploneStyles0098.css" />
+        <link rel="stylesheet" type="text/css" href="javascript/ploneStyles2714.css" />
+        <link rel="stylesheet" type="text/css" href="javascript/ploneStyles4755.css" />
 
         <script>
         	var app;
@@ -54,92 +58,29 @@
                         }                   
                     },
                     map: {
-                        projection: "EPSG:32633",
-                        units: "m",
-                        maxResolution: 10832.0,
-                        maxExtent: [-2500000.0,3500000.0,3045984.0,9045984.0],
-                        numZoomLevels: 18,
-                        wrapDateLine: false,
+                    	projection: "EPSG:3575",
+                    	units: "m",
+                    	maxResolution: 115832.0,
+                    	maxExtent: [-1.2741977029190743E20,-1.2741906468843322E20,1.274199046811774E20,1.2742013988510262E20],
+                    	numZoomLevels: 18,
                         layers: [
-                         {
-                             source: "ol",
-                             type: "OpenLayers.Layer.WMS",
-                             group: "background",
-                             args: [
-                                 "Nautical chart",
-                                 "http://maps.imr.no/geoserver/gwc/service/wms",
-                                 {layers: "Sjokart_Hovedkartserien2", format: "image/png", transparent: true, isBaseLayer: true}
-                                 ,{singleTile:false}
-                             ]
-                         }, {
-                            	source: "ol",
-                                type: "OpenLayers.Layer.WMS",
-                                group: "background",
-                                args: [
-                                       "Norway",
-                                       "http://wms.geonorge.no/skwms1/wms.toporaster2",
-                                       {layers: "toporaster", format: "image/png", transparent: true, isBaseLayer: true}
-                                       ,{singleTile:true}
-                                ]
-                            }, {
-                                source: "ol",
-                                type: "OpenLayers.Layer.WMS",
-                                group: "background",
-                                args: [
-                                       "Norway (gray scale)",
-                                       "http://wms.geonorge.no/skwms1/wms.topo2.graatone",
-                                       {layers: "topo2_graatone_WMS", format: "image/png", transparent: true, isBaseLayer: true}
-                                       ,{singleTile:true}
-                                ]
-                            }, {
-                                source: "ol",
-                                type: "OpenLayers.Layer.WMS",
-                                group: "background",
-                                args: [
-                                     	"Europa",
-                                      	"http://maps.imr.no/geoserver/gwc/service/wms",
-                                      	{layers: "Europa_WMS", format: "image/jpeg", transparent: true, isBaseLayer: true}
-                                      	,{singleTile:false}
-                                ]
-                            }, {
-                                source: "ol",
-                                type: "OpenLayers.Layer.WMS",
-                                group: "background",
-                                args: [
-                                      	"Gebco shaded relief in grayscale",
-                                      	"http://maps.imr.no/geoserver/gwc/service/wms",
-                                      	{layers: "geonorge:geonorge_norge_skyggerelieff", format: "image/jpeg", transparent: true, isBaseLayer: true},
-                                      	{singleTile:false}
-                                ]                            
-                            }, {
-                                source: "ol",
-                                type: "OpenLayers.Layer.WMS",
-                                group: "background",
-                                args: [
-                                      	"Europa og Gebco",
-                                      	"http://maps.imr.no/geoserver/gwc/service/wms",
-                                      	{layers: "barents_watch_WMS", format: "image/jpeg", transparent: true, isBaseLayer: true}
-                                      	,{singleTile:false}
-                                ]
-                            }, {                            	
-                                source: "ol",
-                                type: "OpenLayers.Layer.WMS",
-                                group: "background",
-                                args: [
-                                      	"Europa - white background",
-                                      	"http://maps.imr.no/geoserver/gwc/service/wms",
-                                      	{layers: "geonorge_europa_hvit_bakgrunn",format: "image/jpeg", transparent: true, isBaseLayer: true}
-                                      	,{singleTile:false}
-                                ]
-                            }      
+						{
+							source: "ol",
+                            type: "OpenLayers.Layer.WMS",
+                            group: "background",
+							args: [
+                   				"Arctic",
+                   				"http://maps.imr.no/geoserver/wms",
+                   				{layers: "WORLD_NP_LAEA_WGS84", format: "image/jpeg", transparent: true, isBaseLayer: true}
+                        	]
+           				}    
                         ],
-                        center: [1088474,7489849],
-                        zoom: 2
+                        center: [0,0],
+                        zoom: 3
                     }
                 });
                 
                 app.on("ready", function() {
-                	
                     var treeRoot = Ext.ComponentMgr.all.find(function(c) {
                         return c instanceof Ext.tree.TreePanel;
                     });
@@ -149,34 +90,64 @@
                         loader: new Ext.tree.TreeLoader({url: 'spring/getChildNodes'})
                     }));
                     treeRoot.on('click', function(record, view, item, index, evt, eOpts) {
-                		if (record.leaf) {
-                            Ext.Ajax.request({
-                            	url: 'spring/getDepthAndTime?parameter_id='+record.id+"&language=en",
-                                success: function(objServerResponse) {
-                                	var responseText = objServerResponse.responseText;
-                                    Ext.MessageBox.show({title:'NorMar',msg: responseText,minWidth:600}); 
-                                    
-                                    disableCheckboxIfOnlyOneOption();
-                            	}
-                            });       
-                            return;
-                		} else {
-        					Ext.Ajax.request({
-                            	url: 'spring/getAggregateGroups?parameter_id='+record.id+"&language=en",
-                                success: function(objServerResponse) {
-                                	var responseText = objServerResponse.responseText;
-            	                	var responseText = 
-            	                		responseText.replace("display:none;", ";");
-        							   
-                                    var msgBox = Ext.MessageBox.show({title:'NorMar',msg:responseText,minWidth:600,shadow:true});
-                                    
-                                    disableCheckboxIfOnlyOneOption();
-                            	}        
-                            });
-        					return;
-                		}
-                	});                   
-                });            
+						
+						var mapPanel = Ext.ComponentMgr.all.find(function(c) {
+			                return c instanceof GeoExt.MapPanel;
+			            });
+						var postGisLayer = null;
+						var MAPS_IMR_NO = "http://maps.imr.no/geoserver/wms?";
+
+                   	    var typeValue = "";
+                   	    var style = "";
+						if ( record.attributes.id == 1 ) {
+							typeValue = "BA";
+							style = "arcticroos_gtsbathy";
+                   	 	} else if ( record.attributes.id == 2 ) {
+                   	 		typeValue = "CT";
+                   	 		style = "arcticroos_ctd";
+                   	 	} else if ( record.attributes.id  == 3 ) {
+                   	 		typeValue = "DB";
+                   	 		style = "arcticroos_driftingbouy";
+                   	 	} else if ( record.attributes.id  == 4 ) {
+                   	 		typeValue = "FB";
+                   	 		style = "arcticroos_ferrybox";
+                   	 	} else if ( record.attributes.id  == 5 ) {
+                   	 		typeValue = "MO";
+                   	 		style = "arcticroos_mooring ";
+                   	 	} else if ( record.attributes.id  == 6 ) {
+                   	 		typeValue = ""; // trolig fjernes
+                   	 	} else if ( record.attributes.id  == 7 ) {
+                   	 		typeValue = "PF";
+                   	 		style = "arcticroos_profiling_floats";
+                   	 	} else if ( record.attributes.id  == 8 ) {
+                   	 		typeValue = "TE";
+                   	 		style ="arcticroos_gtstesac";
+                   	 	} else if ( record.attributes.id  == 9 ) {
+                   	 		typeValue = "XB";	
+                   	 		style ="arcticroos_xbt_xctd";
+                   	 	}
+
+                   	    var felayer = new OpenLayers.Layer.WMS(
+                   			"measurements_last_30_days",
+                   			MAPS_IMR_NO,
+                   	        {
+                   	    		layers: "measurements_last_30_days",
+                   		        transparent: true,
+                   		        styles: style
+                   	        },
+                   		    {
+                   	        	isBaseLayer: false
+                   	        }
+                   	    );
+                   	 	felayer.mergeNewParams({ viewparams : 'type:'+typeValue });
+                   	 	mapPanel.map.addLayer(felayer);
+	                     	    
+                   	    /** dns redirect to crius.nodc.no/geoserver/wms */
+                   	    var src = MAPS_IMR_NO + "service=WMS&version=1.1.1&request=GetLegendGraphic&layer=" +
+                   	 		"measurements_last_30_days" + "&width=22&height=24&format=image/png";
+                   	    jQuery("#legend").attr("src",src);                                   	        
+					});          
+                });                
             }
         </script>
     </head>
