@@ -71,7 +71,7 @@
 							args: [
                    				"Arctic",
                    				"http://maps.imr.no/geoserver/wms",
-                   				{layers: "WORLD_NP_LAEA_WGS84", format: "image/jpeg", transparent: true, isBaseLayer: true}
+                   				{layers: "WORLD_NP_LAEA_WGS84", format: "image/jpeg", transparent: true, isBaseLayer: true, styles: "arcticroos_contry"}
                         	]
            				}    
                         ],
@@ -86,7 +86,7 @@
                     });
                     
                     treeRoot.getRootNode().appendChild(new Ext.tree.AsyncTreeNode({
-                        text: 'arctic-roos',
+                        text: 'Arctic ROOS',
                         loader: new Ext.tree.TreeLoader({url: 'spring/getChildNodes'})
                     }));
                     treeRoot.on('click', function(record, view, item, index, evt, eOpts) {
@@ -99,36 +99,47 @@
 
                    	    var typeValue = "";
                    	    var style = "";
+                   	    var name = "";
 						if ( record.attributes.id == 1 ) {
 							typeValue = "BA";
 							style = "arcticroos_gtsbathy";
+							name = "GTS bathy";
                    	 	} else if ( record.attributes.id == 2 ) {
                    	 		typeValue = "CT";
                    	 		style = "arcticroos_ctd";
+                   	 		name = "CTD";
                    	 	} else if ( record.attributes.id  == 3 ) {
                    	 		typeValue = "DB";
                    	 		style = "arcticroos_driftingbouy";
+                   	 		name = "Drifting buoys";
                    	 	} else if ( record.attributes.id  == 4 ) {
                    	 		typeValue = "FB";
                    	 		style = "arcticroos_ferrybox";
+                   	 		name = "Ferrybox";
                    	 	} else if ( record.attributes.id  == 5 ) {
                    	 		typeValue = "MO";
-                   	 		style = "arcticroos_mooring ";
+                   	 		style = "arcticroos_mooring";
+                   	 		name = "Moorings";
                    	 	} else if ( record.attributes.id  == 6 ) {
                    	 		typeValue = ""; // trolig fjernes
+                   	 		style = "arcticroos_wod_ctd";
+                   	 		name = "WOD CTD";
                    	 	} else if ( record.attributes.id  == 7 ) {
                    	 		typeValue = "PF";
                    	 		style = "arcticroos_profiling_floats";
+                   	 		name = "Profiling floats";
                    	 	} else if ( record.attributes.id  == 8 ) {
                    	 		typeValue = "TE";
                    	 		style ="arcticroos_gtstesac";
+                   	 		name = "GTS_TESAC";
                    	 	} else if ( record.attributes.id  == 9 ) {
                    	 		typeValue = "XB";	
                    	 		style ="arcticroos_xbt_xctd";
+                   	 		name = "XBT or XCTD profilers";
                    	 	}
 
                    	    var felayer = new OpenLayers.Layer.WMS(
-                   			"measurements_last_30_days",
+                   			name,
                    			MAPS_IMR_NO,
                    	        {
                    	    		layers: "measurements_last_30_days",
@@ -140,7 +151,14 @@
                    	        }
                    	    );
                    	 	felayer.mergeNewParams({ viewparams : 'type:'+typeValue });
-                   	 	mapPanel.map.addLayer(felayer);
+                   	 	
+//                    	 	GeoExt.data.LayerRecord record = new GeoExt.data.LayerRecord();
+						var record = GeoExt.data.LayerRecord.create();
+						var r =  new record({layer: felayer, title: felayer.name, foo: "bar"}, felayer.id)
+//                    	 	record.setLayer(felayer);
+                   	 	mapPanel.layers.add(r);
+//                    	 	mapPanel.layers.data.items.push(felayer);
+//                    	 	mapPanel.map.addLayer(felayer);
 	                     	    
                    	    /** dns redirect to crius.nodc.no/geoserver/wms */
                    	    var src = MAPS_IMR_NO + "service=WMS&version=1.1.1&request=GetLegendGraphic&layer=" +
