@@ -27,7 +27,7 @@
         <link rel="stylesheet" type="text/css" href="theme/app/geoexplorer.css" />
         <!--[if IE]><link rel="stylesheet" type="text/css" href="theme/app/ie.css"/><![endif]-->
         <link rel="stylesheet" type="text/css" href="theme/ux/colorpicker/color-picker.ux.css" />
-        <script type="text/javascript" src="script/GeoExplorer.js"></script>
+        <script type="text/javascript" src="script/GeoExplorer-debug.js"></script>
         
         <link rel="stylesheet" type="text/css" href="javascript/ploneStyles0098.css" />
         <link rel="stylesheet" type="text/css" href="javascript/ploneStyles2714.css" />
@@ -144,17 +144,19 @@
                    	        {
                    	    		layers: "measurements_last_30_days",
                    		        transparent: true,
-                   		        styles: style
+                   		        styles: style, //"arcticroos_style"
+                                viewparams : 'type:'+typeValue
                    	        },
                    		    {
                    	        	isBaseLayer: false
                    	        }
                    	    );
-                   	 	felayer.mergeNewParams({ viewparams : 'type:'+typeValue });
-                   	 	
+                   	 	//felayer.mergeNewParams({ viewparams : 'type:'+typeValue });
+                   	 	gxp.plugins.WMSGetFeatureInfo.prototype.layerParams = ["viewparams"];
+                        
 //                    	 	GeoExt.data.LayerRecord record = new GeoExt.data.LayerRecord();
 						var record = GeoExt.data.LayerRecord.create();
-						var r =  new record({layer: felayer, title: felayer.name, foo: "bar"}, felayer.id)
+						var r =  new record({layer: felayer, title: felayer.name}, felayer.id)
 						r.set('queryable', true);
 //                    	 	record.setLayer(felayer);
                    	 	mapPanel.layers.add(r);
