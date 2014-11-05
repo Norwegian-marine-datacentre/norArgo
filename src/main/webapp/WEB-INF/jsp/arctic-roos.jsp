@@ -144,21 +144,18 @@
                    	        {
                    	    		layers: "measurements_last_30_days",
                    		        transparent: true,
-                   		        styles: style, //"arcticroos_style"
+                   		        styles: style, 
                                 viewparams : 'type:'+typeValue
                    	        },
                    		    {
                    	        	isBaseLayer: false
                    	        }
                    	    );
-                   	 	//felayer.mergeNewParams({ viewparams : 'type:'+typeValue });
                    	 	gxp.plugins.WMSGetFeatureInfo.prototype.layerParams = ["viewparams"];
                         
-//                    	 	GeoExt.data.LayerRecord record = new GeoExt.data.LayerRecord();
 						var record = GeoExt.data.LayerRecord.create();
 						var r =  new record({layer: felayer, title: felayer.name}, felayer.id)
 						r.set('queryable', true);
-//                    	 	record.setLayer(felayer);
                    	 	mapPanel.layers.add(r);
 //                    	 	mapPanel.layers.data.items.push(felayer);
 //                    	 	mapPanel.map.addLayer(felayer);
