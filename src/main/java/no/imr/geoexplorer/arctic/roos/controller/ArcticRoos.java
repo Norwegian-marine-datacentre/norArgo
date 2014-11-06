@@ -30,6 +30,12 @@ public class ArcticRoos {
     	return new ModelAndView("arctic-roos");
     }
     
+    
+    @RequestMapping("/norArgo.html")
+    public ModelAndView norArgo(HttpServletResponse resp) throws IOException {
+        return new ModelAndView("norArgo");
+    }
+    
 	@RequestMapping("/getChildNodes")
     public @ResponseBody List<ArcticRoosPojo> getChildNodesAsJson(HttpServletRequest request, @RequestParam("node") String node) {
 		ArrayList<ArcticRoosPojo> l = new ArrayList<ArcticRoosPojo>();
