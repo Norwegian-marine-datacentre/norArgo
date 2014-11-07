@@ -3,7 +3,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 <html>
     <head>
-        <title>Arctic Roos</title>
+        <title>NorArgo</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <!--         <link rel="shortcut icon" href="theme/app/img/mareanoLogo.png"> -->
         <!-- Ext resources -->
@@ -86,9 +86,12 @@
                     });
                     
                     treeRoot.getRootNode().appendChild(new Ext.tree.AsyncTreeNode({
-                        text: 'Arctic ROOS',
-                        loader: new Ext.tree.TreeLoader({url: 'spring/getChildNodes'})
+                        text: 'NorArgo',
+                        draggable:false,
+                        id:'source',
+                        children: [{"leaf":true,"id":1,"text":"Points"},{"leaf":true,"id":2,"text":"Lines"}]
                     }));
+                    
                     treeRoot.on('click', function(record, view, item, index, evt, eOpts) {
                         
                         var mapPanel = Ext.ComponentMgr.all.find(function(c) {
@@ -97,61 +100,25 @@
                         var postGisLayer = null;
                         var MAPS_IMR_NO = "http://maps.imr.no/geoserver/wms?";
 
-                        var typeValue = "";
-                        var style = "";
-                        var name = "";
-                        if ( record.attributes.id == 1 ) {
-                            typeValue = "BA";
-                            style = "arcticroos_gtsbathy";
-                            name = "GTS bathy";
-                        } else if ( record.attributes.id == 2 ) {
-                            typeValue = "CT";
-                            style = "arcticroos_ctd";
-                            name = "CTD";
-                        } else if ( record.attributes.id  == 3 ) {
-                            typeValue = "DB";
-                            style = "arcticroos_driftingbouy";
-                            name = "Drifting buoys";
-                        } else if ( record.attributes.id  == 4 ) {
-                            typeValue = "FB";
-                            style = "arcticroos_ferrybox";
-                            name = "Ferrybox";
-                        } else if ( record.attributes.id  == 5 ) {
-                            typeValue = "MO";
-                            style = "arcticroos_mooring";
-                            name = "Moorings";
-                        } else if ( record.attributes.id  == 6 ) {
-                            typeValue = ""; // trolig fjernes
-                            style = "arcticroos_wod_ctd";
-                            name = "WOD CTD";
-                        } else if ( record.attributes.id  == 7 ) {
-                            typeValue = "PF";
-                            style = "arcticroos_profiling_floats";
-                            name = "Profiling floats";
-                        } else if ( record.attributes.id  == 8 ) {
-                            typeValue = "TE";
-                            style ="arcticroos_gtstesac";
-                            name = "GTS_TESAC";
-                        } else if ( record.attributes.id  == 9 ) {
-                            typeValue = "XB";   
-                            style ="arcticroos_xbt_xctd";
-                            name = "XBT or XCTD profilers";
-                        }
 
+                        var layername;
+                        if ( record.id == 1 ) {
+                        	layername = "norargo_points";
+                        } else if( record.id == 2) {
+                        	layername = "norargo_lines";
+                        }
+                        
                         var felayer = new OpenLayers.Layer.WMS(
-                            name,
+                        	layername,
                             MAPS_IMR_NO,
                             {
-                                layers: "measurements_last_30_days",
-                                transparent: true,
-                                styles: style, 
-                                viewparams : 'type:'+typeValue
+                                layers: layername,
+                                transparent: true
                             },
                             {
                                 isBaseLayer: false
                             }
-                        );
-                        gxp.plugins.WMSGetFeatureInfo.prototype.layerParams = ["viewparams"];
+                        );                        
                         
                         var record = GeoExt.data.LayerRecord.create();
                         var r =  new record({layer: felayer, title: felayer.name}, felayer.id)
@@ -159,7 +126,7 @@
                         mapPanel.layers.add(r);
 
                         var src = MAPS_IMR_NO + "service=WMS&version=1.1.1&request=GetLegendGraphic&layer=" +
-                            "measurements_last_30_days" + "&width=22&height=24&format=image/png";
+                            "norargo_point" + "&width=22&height=24&format=image/png";
                         jQuery("#legend").attr("src",src);                                              
                     });          
                 });                
