@@ -2,7 +2,6 @@ package no.imr.geoexplorer.arctic.roos.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,14 +25,7 @@ public class ArcticRoos {
 
     @RequestMapping("/arctic-roos.html")
     public ModelAndView arcticRoos(HttpServletResponse resp) throws IOException {
-    	System.out.println("arctic-roos");
     	return new ModelAndView("arctic-roos");
-    }
-    
-    
-    @RequestMapping("/norArgo.html")
-    public ModelAndView norArgo(HttpServletResponse resp) throws IOException {
-        return new ModelAndView("norArgo");
     }
     
 	@RequestMapping("/getChildNodes")

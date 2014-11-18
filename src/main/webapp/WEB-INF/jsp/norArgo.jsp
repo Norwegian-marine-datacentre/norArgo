@@ -100,7 +100,8 @@
                         var postGisLayer = null;
                         var MAPS_IMR_NO = "http://maps.imr.no/geoserver/wms?";
 
-
+                        var id = "59a275700ebf45abbc5696bb736b196e";
+                        
                         var layername;
                         if ( record.id == 1 ) {
                         	layername = "norargo_points";
@@ -113,7 +114,8 @@
                             MAPS_IMR_NO,
                             {
                                 layers: layername,
-                                transparent: true
+                                transparent: true, 
+                                viewparams : 'id_platform:'+id
                             },
                             {
                                 isBaseLayer: false
