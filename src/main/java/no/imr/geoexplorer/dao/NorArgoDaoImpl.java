@@ -6,7 +6,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import no.imr.geoexplorer.norargo.pojo.LastPositions;
 import no.imr.geoexplorer.norargo.pojo.Measurement;
+import no.imr.geoexplorer.norargo.pojo.Platform;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -37,6 +39,20 @@ public class NorArgoDaoImpl implements NorArgoDao{
         @Override
         public List<Measurement> findAllMeasurement() {
             return (List<Measurement>) entityManager.createQuery("select m from Measurement m")
+                    .getResultList();
+            
+        }
+        
+        @Override
+        public List<Platform> findAllPlatform() {
+            return (List<Platform>) entityManager.createQuery("select p from Platform p")
+                    .getResultList();
+            
+        }
+        
+        @Override
+        public List<LastPositions> findSisteKjentePosisjon() {
+            return (List<LastPositions>) entityManager.createQuery("select m from Measurement m WHERE ")
                     .getResultList();
             
         }

@@ -85,12 +85,16 @@
                         return c instanceof Ext.tree.TreePanel;
                     });
                     
+                    //treeRoot.getRootNode().appendChild(new Ext.tree.AsyncTreeNode({
+                    //    text: 'NorArgo',
+                    //    draggable:false,
+                    //    id:'source',
+                    //    children: [{"leaf":true,"id":1,"text":"Points"},{"leaf":true,"id":2,"text":"Lines"}]
+                    //}));
                     treeRoot.getRootNode().appendChild(new Ext.tree.AsyncTreeNode({
                         text: 'NorArgo',
-                        draggable:false,
-                        id:'source',
-                        children: [{"leaf":true,"id":1,"text":"Points"},{"leaf":true,"id":2,"text":"Lines"}]
-                    }));
+                        loader: new Ext.tree.TreeLoader({url: 'spring/getNorArgoChildNodes.html'})
+                    }));                    
                     
                     treeRoot.on('click', function(record, view, item, index, evt, eOpts) {
                         
@@ -99,13 +103,16 @@
                         });
                         var postGisLayer = null;
                         var MAPS_IMR_NO = "http://maps.imr.no/geoserver/wms?";
-
-                        var id = "59a275700ebf45abbc5696bb736b196e";
                         
                         var layername;
-                        if ( record.id == 1 ) {
+                        var sqlParam
+                        if ( record.text == "Punkter" ) {
+                            var id = record.attributes.idPlatform;
+                            sqlParam = 'id_platform:' + id;                        	
                         	layername = "norargo_points";
-                        } else if( record.id == 2) {
+                        } else if( record.text == "Linjer") {
+                        	var id = record.attributes.id;
+                        	sqlParam = 'id:' + id;
                         	layername = "norargo_lines";
                         }
                         
@@ -115,7 +122,7 @@
                             {
                                 layers: layername,
                                 transparent: true, 
-                                viewparams : 'id_platform:'+id
+                                viewparams : sqlParam
                             },
                             {
                                 isBaseLayer: false

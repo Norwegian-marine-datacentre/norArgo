@@ -6,17 +6,31 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
+/**
+ * Linjer
+ * @author endrem
+ *
+ */
+@JsonIgnoreProperties({ "lastEdited", "wmoPlatformCode"})
 @Entity
-@Table(name="platform", schema="float")
-public class Platform {
+@Table(name="platform", schema="floats")
+public class Platform implements NorArgoElementInterface {
     @Column(name="id")
     @Id
     private String id;
-    @Column(name="lastEdited")
+    @Column(name="last_edited")
     private Date lastEdited;
-    @Column(name="wmoPlatformCode")
+    @Column(name="wmo_platform_code")
     private String wmoPlatformCode;
+    
+    @Transient
+    private String text;
+    @Transient
+    private boolean leaf = true;
     
     public String getId() {
         return id;
@@ -37,6 +51,21 @@ public class Platform {
         this.wmoPlatformCode = wmoPlatformCode;
     }
 
+    public String getText() {
+        return "Linjer";
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public boolean isLeaf() {
+        return leaf;
+    }
+
+    public void setLeaf(boolean leaf) {
+        this.leaf = leaf;
+    }
     
 
 }
