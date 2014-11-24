@@ -10,9 +10,10 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import no.imr.geoexplorer.dao.NorArgoDao;
+import no.imr.geoexplorer.norargo.pojo.LastPositions;
 import no.imr.geoexplorer.norargo.pojo.Measurement;
 import no.imr.geoexplorer.norargo.pojo.NorArgoElement;
-import no.imr.geoexplorer.norargo.pojo.NorArgoElementInterface;
+import no.imr.geoexplorer.norargo.pojo.NorArgoJsonInterface;
 import no.imr.geoexplorer.norargo.pojo.Platform;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class NorArgo {
     
     List<Measurement> m = null;
-    Map<String, NorArgoElementInterface> e = null;
+    Map<String, NorArgoJsonInterface> e = null;
     
     @Autowired
     private NorArgoDao dao;
@@ -37,11 +38,12 @@ public class NorArgo {
     }
     
     @RequestMapping("/getNorArgoChildNodes.html")
-    public @ResponseBody Collection<NorArgoElementInterface> getNorArgoChildNodesAsJson(HttpServletResponse resp) throws IOException {
+    public @ResponseBody List<NorArgoJsonInterface> getNorArgoChildNodesAsJson(HttpServletResponse resp) throws IOException {
+        List<NorArgoJsonInterface> valuesList = null;
         if ( m == null) {
             List<Measurement> m = dao.findAllMeasurement();
         
-            e = new HashMap<String, NorArgoElementInterface>(m.size());
+            e = new HashMap<String, NorArgoJsonInterface>(m.size());
             for ( Measurement mes : m ) {
                 NorArgoElement el = new NorArgoElement();
                 el.setMeasurement( mes );
@@ -50,8 +52,10 @@ public class NorArgo {
                 el.setText( wmo );
                 e.put( wmo, el );
             }
+            valuesList = new ArrayList<NorArgoJsonInterface>(e.values());    
+            valuesList.add(0, new LastPositions());
         }
-        return e.values();
+        return valuesList;
     } 
     
     

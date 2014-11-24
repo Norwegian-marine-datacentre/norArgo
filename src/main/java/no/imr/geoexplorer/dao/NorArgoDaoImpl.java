@@ -52,7 +52,7 @@ public class NorArgoDaoImpl implements NorArgoDao{
         
         @Override
         public List<LastPositions> findSisteKjentePosisjon() {
-            return (List<LastPositions>) entityManager.createQuery("select m from Measurement m WHERE ")
+            return (List<LastPositions>) entityManager.createQuery("select c FROM floats.currentmeasurement c")
                     .getResultList();
             
         }

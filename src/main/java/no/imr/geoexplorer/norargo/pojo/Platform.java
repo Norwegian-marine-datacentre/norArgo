@@ -18,7 +18,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 @JsonIgnoreProperties({ "lastEdited", "wmoPlatformCode"})
 @Entity
 @Table(name="platform", schema="floats")
-public class Platform implements NorArgoElementInterface {
+public class Platform implements NorArgoJsonInterface {
     @Column(name="id")
     @Id
     private String id;

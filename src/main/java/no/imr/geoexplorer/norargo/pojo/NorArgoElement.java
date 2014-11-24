@@ -1,18 +1,17 @@
 package no.imr.geoexplorer.norargo.pojo;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 @JsonIgnoreProperties({ "id", "measurement", "platform"})
-public class NorArgoElement implements NorArgoElementInterface {
+public class NorArgoElement implements NorArgoJsonInterface {
     private String id;
     private Measurement measurement;
     private Platform platform;
     
-    private List<NorArgoElementInterface> children;
+    private List<NorArgoJsonInterface> children;
     private String text;
     private boolean leaf = false;
     
@@ -47,10 +46,10 @@ public class NorArgoElement implements NorArgoElementInterface {
     public void setLeaf(boolean leaf) {
         this.leaf = leaf;
     }
-    public List<NorArgoElementInterface> getChildren() {
+    public List<NorArgoJsonInterface> getChildren() {
         return this.children = Arrays.asList(measurement, platform);
     }
-    public void setChildren(List<NorArgoElementInterface> children) {
+    public void setChildren(List<NorArgoJsonInterface> children) {
         this.children = children;
     }
     

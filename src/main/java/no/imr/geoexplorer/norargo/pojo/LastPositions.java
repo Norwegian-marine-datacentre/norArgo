@@ -1,30 +1,37 @@
 package no.imr.geoexplorer.norargo.pojo;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
-public class LastPositions {
-    @Id
-    @Column(name="id")
-    private String id;
-    @Column(name="last_edited")
-    private Date last_edited;
-    @Column(name="latitude")
-    private double latitude;
-    @Column(name="longitude")
-    private double longitude;
+import org.springframework.stereotype.Component;
+
+@Component
+public class LastPositions implements NorArgoJsonInterface {
+
     @Transient
-    private int original;    
-    @ManyToOne
-    @JoinColumn(name = "id_platform")
-    private Platform platform;
-    @Transient    
-    private Date date;
-    @Transient    
-    private Object geometry;
+    private boolean leaf = true;
+    @Transient
+    private String text = "alle floats";
+    @Transient
+    private String id = "alle floats";    
+    
+    
+    public boolean isLeaf() {
+        return leaf;
+    }
+    public void setLeaf(boolean leaf) {
+        this.leaf = leaf;
+    }
+    public String getText() {
+        return "Alle floats";
+    }
+    public void setText(String text) {
+        this.text = text;
+    }
+    public String getId() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
+    }
+    
 }

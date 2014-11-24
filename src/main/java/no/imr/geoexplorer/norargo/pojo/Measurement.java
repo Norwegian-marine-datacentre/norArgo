@@ -19,7 +19,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 @JsonIgnoreProperties({ "id", "last_edited", "latitude","longitude","original","platform","date","geometry" })
 @Entity
 @Table(name="measurement", schema="floats")
-public class Measurement implements NorArgoElementInterface{
+public class Measurement implements NorArgoJsonInterface{
     @Id
     @Column(name="id")
     private String id;
