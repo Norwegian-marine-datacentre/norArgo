@@ -5,15 +5,15 @@
  */
 
 /** api: (define)
- *  module = GeoExplorer
- *  class = GeoExplorer.Composer(config)
- *  extends = GeoExplorer
+ *  module = NorArgo
+ *  class = NorArgo.Composer(config)
+ *  extends = GeoExplorer.Composer
  */
 
 /** api: constructor
- *  .. class:: GeoExplorer.Composer(config)
+ *  .. class:: NorArgo.Composer(config)
  *
- *      Create a GeoExplorer application intended for full-screen display.
+ *      Create a NorArgo branded GeoExplorer application 
  */
 Ext.ns("NorArgo.plugins");
 
