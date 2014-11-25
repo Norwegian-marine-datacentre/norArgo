@@ -32,6 +32,8 @@
         <link rel="stylesheet" type="text/css" href="javascript/ploneStyles0098.css" />
         <link rel="stylesheet" type="text/css" href="javascript/ploneStyles2714.css" />
         <link rel="stylesheet" type="text/css" href="javascript/ploneStyles4755.css" />
+        
+        <script type="text/javascript" src="javascript/norArgoComposer.js"></script>
 
         <script>
             var app;
@@ -42,7 +44,7 @@
                 //Ext.BLANK_IMAGE_URL = "theme/app/img/blank.gif";
                 OpenLayers.ImgPath = "theme/app/img/";
                 GeoExt.Lang.set('en');
-                app = new GeoExplorer.Composer({
+                app = new NorArgo.Composer({
                     <!-- authStatus: < status >, -->
                     proxy: "proxy/?url=",
                     printService: null,
@@ -114,7 +116,8 @@
                         	var id = record.attributes.id;
                         	sqlParam = 'id:' + id;
                         	layername = "norargo_lines";
-                        }
+                        } 
+                        	
                         
                         var felayer = new OpenLayers.Layer.WMS(
                         	layername,
@@ -127,7 +130,24 @@
                             {
                                 isBaseLayer: false
                             }
-                        );                        
+                        );
+                        
+                        if ( record.text == "Alle floats") {
+                            layername = "norargo_all_points";
+                            felayer = new OpenLayers.Layer.WMS(
+                                layername,
+                                MAPS_IMR_NO,
+                                {
+                                    layers: layername,
+                                    transparent: true,
+                                    style: "green"
+                                },
+                                {
+                                    isBaseLayer: false
+                                }
+                            );
+                            gxp.plugins.WMSGetFeatureInfo.prototype.layerParams = ["viewparams"];
+                        }
                         
                         var record = GeoExt.data.LayerRecord.create();
                         var r =  new record({layer: felayer, title: felayer.name}, felayer.id)

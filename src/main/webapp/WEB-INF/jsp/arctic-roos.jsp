@@ -32,6 +32,8 @@
         <link rel="stylesheet" type="text/css" href="javascript/ploneStyles0098.css" />
         <link rel="stylesheet" type="text/css" href="javascript/ploneStyles2714.css" />
         <link rel="stylesheet" type="text/css" href="javascript/ploneStyles4755.css" />
+        
+        <script type="text/javascript" src="javascript/arcticRoosComposer.js"></script>
 
         <script>
         	var app;
@@ -157,30 +159,6 @@
 						var r =  new record({layer: felayer, title: felayer.name}, felayer.id)
 						r.set('queryable', true);
                    	 	mapPanel.layers.add(r);
-//                    	 	mapPanel.layers.data.items.push(felayer);
-//                    	 	mapPanel.map.addLayer(felayer);
-
-//                         OLRecord = gxp.plugins.OLSource.prototype.createLayerRecord({
-//                             source: "ol",
-//                             type: "OpenLayers.Layer.WMS",
-//                             group: "articRoos",
-//                             queryable: true,
-//                             visibility: true
-//                             properties: "mareano_wmslayerpanel",            
-//                             args: [
-//                                 name,
-//                                 MAPS_IMR_NO,
-//                                 {layers: "measurements_last_30_days", format: "image/png", transparent: true},
-//                                 {
-//                                     opacity: 1,
-//                                     units: "m",
-//                                     singleTile:true,
-//                                     buffer: 0, 
-//                                     ratio: 1                                         
-//                                 }
-//                             ]
-//                         });
-//                         mapPanel.layers.add(OLRecord);
 	                     	    
                    	    /** dns redirect to crius.nodc.no/geoserver/wms */
                    	    var src = MAPS_IMR_NO + "service=WMS&version=1.1.1&request=GetLegendGraphic&layer=" +
