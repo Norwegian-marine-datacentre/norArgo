@@ -86,13 +86,6 @@
                     var treeRoot = Ext.ComponentMgr.all.find(function(c) {
                         return c instanceof Ext.tree.TreePanel;
                     });
-                    
-                    //treeRoot.getRootNode().appendChild(new Ext.tree.AsyncTreeNode({
-                    //    text: 'NorArgo',
-                    //    draggable:false,
-                    //    id:'source',
-                    //    children: [{"leaf":true,"id":1,"text":"Points"},{"leaf":true,"id":2,"text":"Lines"}]
-                    //}));
                     treeRoot.getRootNode().appendChild(new Ext.tree.AsyncTreeNode({
                         text: 'NorArgo',
                         loader: new Ext.tree.TreeLoader({url: 'spring/getNorArgoChildNodes.html'})
