@@ -34,6 +34,7 @@
         <link rel="stylesheet" type="text/css" href="javascript/ploneStyles4755.css" />
         
         <script type="text/javascript" src="javascript/norArgoComposer.js"></script>
+        <script type="text/javascript" src="javascript/createOLSourceLayerRecord.js"></script>
 
         <script>
             var app;
@@ -63,8 +64,11 @@
                         projection: "EPSG:3575",
                         units: "m",
                         maxResolution: 115832.0,
-                        maxExtent: [-1.2741977029190743E20,-1.2741906468843322E20,1.274199046811774E20,1.2742013988510262E20],
+                        //maxExtent: [-1.2741977029190743E20,-1.2741906468843322E20,1.274199046811774E20,1.2742013988510262E20],
+                        //maxExtent: [-2746379.0,-4320407.0,8345589.0,1225577.0],
+                        maxExtent: [-4E7, -4E7, 4E7, 4E7],
                         numZoomLevels: 18,
+                        wrapDateLine: false,
                         layers: [
                         {
                             source: "ol",
@@ -146,10 +150,25 @@
                             gxp.plugins.WMSGetFeatureInfo.prototype.layerParams = ["viewparams"];
                         }
                         
+                        var store = createOLSourceLayerRecord(layerText, MAPS_IMR_NO, layername);
+                        var tmpLoader = new GeoExt.tree.LayerLoader({
+                            store: store
+                        });
+
+                        var layerContainerGruppe = new GeoExt.tree.LayerContainer({
+                            expanded: true,     
+                            text: 'gruppe text',                               
+                            layerStore: store,
+                            loader: tmpLoader
+                        });
+                        
+                        treeRoot.getRootNode().appendChild( layerContainerGruppe );
+                        
+                        
                         var geoExtRecord = GeoExt.data.LayerRecord.create();
                         var r =  new geoExtRecord({layer: felayer, title: felayer.name}, felayer.id)
                         r.set('queryable', true);
-                        mapPanel.layers.add(r);
+                        //mapPanel.layers.add(r);
                         
                         // now move the markers to the top of the stack 
                         // change the order of the new layer with norargo_all_points

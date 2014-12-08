@@ -32,7 +32,7 @@ NorArgo.Composer  = Ext.extend(GeoExplorer.Composer, {
             id: "topPanelHeading",
             collapseMode: "mini",
             html:"" +
-            "<div style=\"float:left;\">NorArgo</div><div style=\"float:right;\"><img src=\"javascript/background_top_trans.jpg\"/></div>"       
+            "<div style=\"float:left;\"><img src=\"javascript/jerico_banner.jpg\"/></div><div style=\"float:right;\"><img src=\"javascript/background_top_trans.jpg\"/></div>"       
         });   
         
         this.portalItems[0].items.push( northPanel );

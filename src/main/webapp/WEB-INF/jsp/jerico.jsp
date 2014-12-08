@@ -63,8 +63,11 @@
                         projection: "EPSG:3575",
                         units: "m",
                         maxResolution: 115832.0,
-                        maxExtent: [-1.2741977029190743E20,-1.2741906468843322E20,1.274199046811774E20,1.2742013988510262E20],
+                        //maxExtent: [-1.2741977029190743E20,-1.2741906468843322E20,1.274199046811774E20,1.2742013988510262E20],
+                        //maxExtent: [-2746379.0,-4320407.0,8345589.0,1225577.0],
+                        maxExtent: [-4E7, -4E7, 4E7, 4E7],
                         numZoomLevels: 18,
+                        wrapDateLine: false,
                         layers: [
                         {
                             source: "ol",
@@ -77,7 +80,7 @@
                             ]
                         }                       
                         ],
-                        center: [0,0],
+                        center: [4E3,-4E6],
                         zoom: 3
                     }
                 });
@@ -86,11 +89,21 @@
                     var treeRoot = Ext.ComponentMgr.all.find(function(c) {
                         return c instanceof Ext.tree.TreePanel;
                     });
-                    treeRoot.getRootNode().appendChild(new Ext.tree.AsyncTreeNode({
-                        text: 'Jerico',
-                        loader: new Ext.tree.TreeLoader({url: 'spring/getJericoChildNodes.html'})
-                    }));                    
-                    
+
+					treeRoot.getRootNode().appendChild(new Ext.tree.AsyncTreeNode({
+					    text: 'Jerico',
+					    draggable:false,
+					    id:'source',
+					    children: [
+					               {"leaf":true,"id":2,"text":"Arctic"},
+					               {"leaf":true,"id":3,"text":"BLAC"},
+					               {"leaf":true,"id":4,"text":"BOOS"},
+					               {"leaf":true,"id":5,"text":"IBI"},
+					               {"leaf":true,"id":6,"text":"MON"},
+					               {"leaf":true,"id":7,"text":"NOOS"},
+					               {"leaf":true,"id":1,"text":"All"}]
+					}));
+					
                     treeRoot.on('click', function(record, view, item, index, evt, eOpts) {
                         
                         var mapPanel = Ext.ComponentMgr.all.find(function(c) {
@@ -99,69 +112,35 @@
                         var postGisLayer = null;
                         var MAPS_IMR_NO = "http://maps.imr.no/geoserver/wms?";
                         
-                        var layername;
-                        var layerText
-                        var sqlParam
-                        if ( record.text == "Punkter" ) {
-                            var id = record.attributes.idPlatform;
-                            sqlParam = 'id_platform:' + id;                         
-                            layername = "norargo_points";
-                            layerText = record.parentNode.attributes.text + "Punkter";
-                        } else if( record.text == "Linjer") {
-                            var id = record.attributes.id;
-                            sqlParam = 'id:' + id;
-                            layername = "norargo_lines";
-                            layerText = record.parentNode.attributes.text + "Linjer";
-                        } 
-                            
-                        
+                        var sqlParam = "";
+                        if (record.text == "All") {
+                        	sqlParam = "";
+                        } else {
+                        	sqlParam = record.text;
+                        }
                         var felayer = new OpenLayers.Layer.WMS(
-                            layerText,
+                        	record.text,
                             MAPS_IMR_NO,
                             {
-                                layers: layername,
-                                transparent: true, 
-                                viewparams : sqlParam
+                                layers: "jerico",
+                                transparent: true
                             },
                             {
                                 isBaseLayer: false
                             }
                         );
-                        
-                        if ( record.text == "Alle floats") {
-                            layername = "norargo_all_points";
-                            layerText = "NorArgo alle punkter";
-                            felayer = new OpenLayers.Layer.WMS(
-                                layerText,
-                                MAPS_IMR_NO,
-                                {
-                                    layers: layername,
-                                    transparent: true
-                                },
-                                {
-                                    isBaseLayer: false
-                                }
-                            );
-                            
+                        if (record.text != "All") {
+                            felayer.mergeNewParams({ viewparams:'type:'+record.text});
                             gxp.plugins.WMSGetFeatureInfo.prototype.layerParams = ["viewparams"];
+                        } else {
+                            felayer.mergeNewParams({ viewparams:'type:'+"%%"});
+                            gxp.plugins.WMSGetFeatureInfo.prototype.layerParams = ["viewparams"];                        	
                         }
                         
                         var geoExtRecord = GeoExt.data.LayerRecord.create();
                         var r =  new geoExtRecord({layer: felayer, title: felayer.name}, felayer.id)
                         r.set('queryable', true);
                         mapPanel.layers.add(r);
-                        
-                        // now move the markers to the top of the stack 
-                        // change the order of the new layer with norargo_all_points
-                        var map = mapPanel.map
-                        var yourMarkers = map.getLayersByName("NorArgo alle punkter")[0];
-                        if ( record.text != "Alle floats" && yourMarkers != null) {
-                            var layerIndex = map.getLayerIndex(yourMarkers);
-                            var layerIndex2 = map.getLayerIndex(felayer);
-                            map.setLayerIndex(felayer,layerIndex);
-                            map.setLayerIndex(yourMarkers,layerIndex2); 
-                        }
-                        
 
                         var src = MAPS_IMR_NO + "service=WMS&version=1.1.1&request=GetLegendGraphic&layer=" +
                             "norargo_point" + "&width=22&height=24&format=image/png";
