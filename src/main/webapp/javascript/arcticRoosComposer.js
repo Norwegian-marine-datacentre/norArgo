@@ -21,18 +21,21 @@ ArcticRoos.Composer  = Ext.extend(GeoExplorer.Composer, {
     constructor: function() {
     	ArcticRoos.Composer.superclass.constructor.apply(this, arguments);  
     	this.on("beforecreateportal", this.modifyPortal, this);
-    	this.toolbar.disabled = false;
-    },
-    
-    loadConfig: function(config) {
     },
     
     modifyPortal: function() {
+        var toolbar = Ext.ComponentMgr.all.find(function(c) {
+        	if ( c instanceof Ext.Toolbar && c.id == 'paneltbar') {
+        		return c;
+        	}
+        });    	
+        toolbar.hidden = false;   
         var northPanel = new Ext.Panel({
             border: true,
             region: "north",
             split: true,
             height: 150,
+            bbar: toolbar,
             id: "topPanelHeading",
             collapseMode: "mini",
             //bodyStyle: "background-image:url('theme/app/img/background_body_None.jpg')",

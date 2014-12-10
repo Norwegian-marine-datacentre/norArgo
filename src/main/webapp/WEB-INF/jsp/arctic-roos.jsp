@@ -44,7 +44,7 @@
                 //Ext.BLANK_IMAGE_URL = "theme/app/img/blank.gif";
                 OpenLayers.ImgPath = "theme/app/img/";
                 GeoExt.Lang.set('en');
-                app = new GeoExplorer.Composer({
+                app = new ArcticRoos.Composer({
                     <!-- authStatus: < status >, -->
                     proxy: "proxy/?url=",
                     printService: null,

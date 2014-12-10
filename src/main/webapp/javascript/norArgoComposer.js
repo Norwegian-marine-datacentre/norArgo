@@ -19,16 +19,24 @@ Ext.ns("NorArgo.plugins");
 
 NorArgo.Composer  = Ext.extend(GeoExplorer.Composer, {
     constructor: function() {
-    	NorArgo.Composer.superclass.constructor.apply(this, arguments);    
+    	NorArgo.Composer.superclass.constructor.apply(this, arguments);
         this.on("beforecreateportal", this.modifyPortal, this);
     },
     
     modifyPortal: function() {
+        var toolbar = Ext.ComponentMgr.all.find(function(c) {
+        	if ( c instanceof Ext.Toolbar && c.id == 'paneltbar') {
+        		return c;
+        	}
+        });
+        toolbar.hidden = false;        
+    	this.portalItems.tbar = null;
         var northPanel = new Ext.Panel({
             border: true,
             region: "north",
             split: true,
             height: 150,
+            bbar: toolbar,
             id: "topPanelHeading",
             collapseMode: "mini",
             html:"" +

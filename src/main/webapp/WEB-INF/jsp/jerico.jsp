@@ -44,7 +44,7 @@
                 //Ext.BLANK_IMAGE_URL = "theme/app/img/blank.gif";
                 OpenLayers.ImgPath = "theme/app/img/";
                 GeoExt.Lang.set('en');
-                app = new NorArgo.Composer({
+                app = new Jerico.Composer({
                     <!-- authStatus: < status >, -->
                     proxy: "proxy/?url=",
                     printService: null,
