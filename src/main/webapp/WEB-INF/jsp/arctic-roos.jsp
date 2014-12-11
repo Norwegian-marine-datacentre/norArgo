@@ -63,8 +63,6 @@
                     	projection: "EPSG:3575",
                     	units: "m",
                     	maxResolution: 115832.0,
-                    	//maxExtent: [-1.2741977029190743E20,-1.2741906468843322E20,1.274199046811774E20,1.2742013988510262E20],
-                    	//maxExtent: [-2746379.0,-4320407.0,8345589.0,1225577.0],
                     	maxExtent: [-4E7, -4E7, 4E7, 4E7],
                     	numZoomLevels: 18,
                         wrapDateLine: false,

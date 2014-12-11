@@ -24,12 +24,9 @@ ArcticRoos.Composer  = Ext.extend(GeoExplorer.Composer, {
     },
     
     modifyPortal: function() {
-        var toolbar = Ext.ComponentMgr.all.find(function(c) {
-        	if ( c instanceof Ext.Toolbar && c.id == 'paneltbar') {
-        		return c;
-        	}
-        });    	
-        toolbar.hidden = false;   
+        var toolbar = this.portalItems[0].tbar;
+        this.portalItems[0].tbar = null;
+        
         var northPanel = new Ext.Panel({
             border: true,
             region: "north",
@@ -64,8 +61,6 @@ ArcticRoos.Composer  = Ext.extend(GeoExplorer.Composer, {
 "          <div id=\"portal-skinswitcher\">" +
 
 "</div>" +
-
-           
 "  <h5 class=\"hiddenStructure\">Sections</h5>" +
 
 "  <ul id=\"portal-globalnav\">" +
