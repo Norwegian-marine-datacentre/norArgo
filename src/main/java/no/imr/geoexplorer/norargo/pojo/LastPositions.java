@@ -5,15 +5,16 @@ import javax.persistence.Transient;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LastPositions implements NorArgoJsonInterface {
+public class LastPositions implements NorArgoJson {
 
     @Transient
     private boolean leaf = true;
     @Transient
-    private String text = "alle floats";
+    private String text = "Alle floats";
     @Transient
-    private String id = "alle floats";    
-    
+    private String id = "Alle floats";    
+    @Transient
+    private String layer = "norargo_all_points";    //norargo_last60daysmovement
     
     public boolean isLeaf() {
         return leaf;
@@ -22,7 +23,7 @@ public class LastPositions implements NorArgoJsonInterface {
         this.leaf = leaf;
     }
     public String getText() {
-        return "Alle floats";
+        return text;
     }
     public void setText(String text) {
         this.text = text;
@@ -33,5 +34,10 @@ public class LastPositions implements NorArgoJsonInterface {
     public void setId(String id) {
         this.id = id;
     }
-    
+    public String getLayer() {
+        return this.layer;
+    }
+    public void setLayer(String layer) {
+        this.layer = layer;
+    }
 }

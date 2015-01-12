@@ -86,7 +86,116 @@
                 
                 var MAPS_IMR_NO = "http://maps.imr.no/geoserver/wms?";
                 var layers = [];
+                
+                app.on("ready0", function() {
+                    var treeRoot = Ext.getCmp('layers');
+                    var root = treeRoot.getRootNode().appendChild(new Ext.tree.AsyncTreeNode({
+                        text: 'NorArgo',
+                        loader: new Ext.tree.TreeLoader({
+                            url: 'spring/getNorArgoChildNodes.html',
+                            createNode: function(attr) {
+                                attr.nodeType = "gx_layer";
+                                attr.layer = new OpenLayers.Layer.WMS(attr.text, "http://maps.imr.no/geoserver/wms?", {
+                                    layers: 'norargo_all_points',
+                                    transparent: 'TRUE'
+                                }, {
+                                    displayInLayerSwitcher: false,
+                                    visibility: false,
+                                    isBaseLayer: false
+                                });
+                                app.mapPanel.map.addLayer(attr.layer);
+                                return Ext.tree.TreeLoader.prototype.createNode.call(this, attr);
+                            }
+                        })
+                    }));
+                });                
+                
+                /*{name: "name", type: "string"},
+                {name: "source", type: "string"}, 
+                {name: "group", type: "string"},
+                {name: "fixed", type: "boolean"},
+                {name: "selected", type: "boolean"},
+                {name: "type", type: "string"},
+                {name: "args"},
+                {name: "queryable", type: "boolean"}*/
+                
+                app.on("ready1", function() {
+                    var treeRoot = Ext.getCmp('layers');
+                    var root = treeRoot.getRootNode().appendChild(new Ext.tree.AsyncTreeNode({
+                        text: 'NorArgo',
+                        loader: new Ext.tree.TreeLoader({
+                            url: 'spring/getNorArgoChildNodes.html',
+                            createNode: function(attr) {
+                                attr.nodeType = "gx_layer";
+                                var record = app.layerSources.local.createLayerRecord({
+                                    name: 'usa:states',
+                                    title: 'usa:states',
+                                    visibility: false,
+                                    bbox: [-20037508.34, -20037508.34, 20037508.34, 20037508.34]
+                                });
+                                record.getLayer().addOptions({displayInLayerSwitcher: false});
+                                app.mapPanel.layers.add(record);
+                                //app.mapPanel.layers.add(attr.layer);  //funker
+                                attr.layer = record.getLayer();
+                                return Ext.tree.TreeLoader.prototype.createNode.call(this, attr);
+                            }
+                        })
+                    }));
+                });
+                
                 app.on("ready", function() {
+                    var treeRoot = Ext.getCmp('layers');
+                    var root = treeRoot.getRootNode().appendChild(new Ext.tree.AsyncTreeNode({
+                        text: 'NorArgo',
+                        loader: new Ext.tree.TreeLoader({
+                            //url: 'http://localhost/git/getNorArgoChildNodes.html',
+                            url: 'spring/getNorArgoChildNodes.html',
+                            createNode: function(attr) {
+                                attr.nodeType = "gx_layer";
+                                
+                                var layerText;
+                                var sqlParam;
+                                if ( attr.text == "Punkter" ) {
+                                    var id = attr.idPlatform;
+                                    sqlParam = 'id_platform:' + id;                         
+                                    layerText = "Punkter";
+                                } else if( attr.text == "Linjer") {
+                                    var id = attr.id;
+                                    sqlParam = 'id:' + id;
+                                    layerText = "Linjer";
+                                } 
+                                
+                                var record = app.layerSources.ol.createLayerRecord({
+                                    type: 'OpenLayers.Layer.WMS', 
+                                    args: [
+                                           attr.text, 
+                                           MAPS_IMR_NO, 
+                                           {
+                                        	   LAYERS: attr.layer, 
+                                        	   TRANSPARENT: 'TRUE',
+                                        	   viewparams : sqlParam
+                                           }, 
+                                           {
+                                        	   displayInLayerSwitcher: false, 
+                                        	   isBaseLayer: false
+                                           }
+                                    ],
+                                    visibility: false
+                                });
+                                gxp.plugins.WMSGetFeatureInfo.prototype.layerParams = ["viewparams"];
+                                
+                                app.mapPanel.layers.add(record);
+//                                 app.mapPanel.layers.add(attr.layer);  //funker
+                                attr.layer = record.getLayer();
+                                gxp.plugins.WMSGetFeatureInfo.prototype.layerParams = ["viewparams"];
+                                return Ext.tree.TreeLoader.prototype.createNode.call(this, attr);
+                            }
+                        })
+                    }));
+                });
+  
+                
+                app.on("tmpready", function() {
                     var treeRoot = Ext.getCmp('layers');
                     
                     var root = treeRoot.getRootNode().appendChild(new Ext.tree.AsyncTreeNode({
@@ -94,19 +203,22 @@
                         loader: new Ext.tree.TreeLoader({
                        	    url: 'spring/getNorArgoChildNodes.html', 
                        	    createNode: function(attr) {
-                            attr.checked = attr.leaf ? false : undefined; 
+                            attr.checked = attr.leaf ? false : undefined;
+                            attr.render = false;
                             // TODO set attr.layer - adding OLRecord
                             if ( attr.leaf ) {
                                 attr.nodeType = "gx_layer";
                                 attr.disabled = false;
+                                attr.render = true;
 	                            var OLRecord = gxp.plugins.OLSource.prototype.createLayerRecord({
 	                                source: "ol",
 	                                type: "OpenLayers.Layer.WMS",
 	                                group: "group",
 	                                queryable: true,
-	                                visibility: true,            
+	                                visibility: true,  
+	                                properties: "gxp_wmslayerpanel",
 	                                args: [
-	                                       attr.text,
+	                                       "norargo_points",
 	                                       MAPS_IMR_NO,
 	                                       {layers: "norargo_points", format: "image/png", transparent: true},
 	                                       {
@@ -119,7 +231,10 @@
 	                                ]
 	                            });        
 	                            attr.layer = OLRecord.getLayer();
+	                            layers.push(OLRecord.getLayer());
+	                            attr.layer.setVisibility(true);
 	                            var treeLoaderNode = Ext.tree.TreeLoader.prototype.createNode.call(this, attr);
+// 	                            return treeLoaderNode;
 //                              GeoExt.tree.LayerLoader.prototype.createNode.apply(this, attr); 
 
                                 var store = new GeoExt.data.LayerStore();
@@ -129,9 +244,13 @@
                                     createNode: function(attr) {
                                         var layerRecord = this.store.getByLayer(attr.layer);
                                         layerRecord.getLayer().setVisibility(true);
-                                        app.mapPanel.layers.add(layerRecord.getLayer());   
+                                        var tmp = layerRecord.data;
+                                        var tmpp = tmp.layer;
+                                        layerss = app.mapPanel.layers; 
+//                                         app.mapPanel.layers.add(tmpp);   
                                         var node = GeoExt.tree.LayerLoader.prototype.createNode.call(this, attr);
                                         node.on("checkchange", function(event) {
+                                        	node.ui.toggleCheck(checked);
                                             var layer = layerRecord.getLayer();
                                             var record = event.layerStore.getByLayer(layer);
                                             record.getLayer().setVisibility(true);
@@ -142,7 +261,8 @@
                                 var layerContainerGruppe = new GeoExt.tree.LayerContainer({
                                     checked: false,
                                     expanded: true,     
-                                    text: "gruppeText",                             
+//                                     text: "gruppeText", 
+                                    text: "Overlays",
                                     layerStore: store,
                                     loader: layerLoader
                                 });
@@ -170,7 +290,10 @@
                                     var node = GeoExt.tree.LayerLoader.prototype.createNode.call(this, attr); 
                                     node.checked = false;
                                     node.on("checkchange", function(event) {
-                                        app.mapPanel.layers.add(layerRecord);    
+                                        var layer = layerRecord.getLayer();
+                                        var record = event.layerStore.getByLayer(layer);
+                                        record.getLayer().setVisibility(true);
+                                        app.mapPanel.layers.add(record);    
                                     });
                                     return node;
                                  }
