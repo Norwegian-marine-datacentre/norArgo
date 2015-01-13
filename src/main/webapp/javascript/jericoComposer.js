@@ -24,12 +24,9 @@ Jerico.Composer  = Ext.extend(GeoExplorer.Composer, {
     },
     
     modifyPortal: function() {
-    	var toolbar = Ext.ComponentMgr.all.find(function(c) {
-        	if ( c instanceof Ext.Toolbar && c.id == 'paneltbar') {
-        		return c;
-        	}
-        });
-        toolbar.hidden = false;
+        var toolbar = this.portalItems[0].tbar;
+        this.portalItems[0].tbar = null;
+   	
         var northPanel = new Ext.Panel({
             border: true,
             region: "north",
@@ -40,8 +37,8 @@ Jerico.Composer  = Ext.extend(GeoExplorer.Composer, {
             collapseMode: "mini",
             html:"" +
             "<div style=\"float:left;\"><img src=\"javascript/jerico_banner.jpg\"/></div><div style=\"float:right;\"><img src=\"javascript/background_top_trans.jpg\"/></div>"       
-        });   
-        
+        });
         this.portalItems[0].items.push( northPanel );
     }    
+       
 });
