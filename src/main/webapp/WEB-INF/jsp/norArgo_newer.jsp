@@ -143,7 +143,7 @@
                     }));
                 });
                 
-                app.on("ready", function() {
+                app.on("ready2", function() {
                     var treeRoot = Ext.getCmp('layers');
                     var root = treeRoot.getRootNode().appendChild(new Ext.tree.AsyncTreeNode({
                         text: 'NorArgo',
@@ -187,12 +187,37 @@
                                 app.mapPanel.layers.add(record);
 //                                 app.mapPanel.layers.add(attr.layer);  //funker
                                 attr.layer = record.getLayer();
-                                gxp.plugins.WMSGetFeatureInfo.prototype.layerParams = ["viewparams"];
                                 return Ext.tree.TreeLoader.prototype.createNode.call(this, attr);
                             }
                         })
                     }));
                 });
+                
+                app.on("ready", function() {
+                    var treeRoot = Ext.getCmp('layers');
+                    var root = treeRoot.getRootNode().appendChild(new Ext.tree.AsyncTreeNode({
+                        text: 'NorArgo',
+                        loader: new Ext.tree.TreeLoader({
+                            url: 'spring/getNorArgoChildNodes.html',
+                            createNode: function(attr) {
+                                attr.nodeType = "gx_layer";
+                                //var record = app.layerSources.ol.createLayerRecord({
+//                                 var record = gxp.plugins.OLSource.prototype.createLayerRecord({
+	                               var record =  app.layerSources.local.createLayerRecord({
+                                    type: 'OpenLayers.Layer.WMS', 
+                                    args: ['norargo_points', MAPS_IMR_NO, {LAYERS: 'norargo_all_points', TRANSPARENT: 'TRUE'}, 
+                                           {displayInLayerSwitcher: false, isBaseLayer: false}
+                                    ],
+                                    visibility: false
+                                });
+                                app.mapPanel.layers.add(record); 
+                                attr.layer = record.getLayer();
+                                return Ext.tree.TreeLoader.prototype.createNode.call(this, attr);
+                            }
+                        })
+                    }));
+                });
+                
   
                 
                 app.on("tmpready", function() {

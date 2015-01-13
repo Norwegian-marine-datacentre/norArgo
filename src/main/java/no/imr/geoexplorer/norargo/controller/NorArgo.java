@@ -2,7 +2,6 @@ package no.imr.geoexplorer.norargo.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -37,9 +36,9 @@ public class NorArgo {
         return new ModelAndView("norArgo");
     }
     
-    @RequestMapping("/norArgo_new.html")
+    @RequestMapping("/norArgo_openlayers.html")
     public ModelAndView arcticRoos_new(HttpServletResponse resp) throws IOException {
-        return new ModelAndView("norArgo_new");
+        return new ModelAndView("norArgo_openlayers");
     }
     
     @RequestMapping("/norArgo_newer.html")
