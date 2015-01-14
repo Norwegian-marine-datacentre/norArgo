@@ -127,7 +127,8 @@
                                 });
                                 gxp.plugins.WMSGetFeatureInfo.prototype.layerParams = ["viewparams"];
 
-                                app.mapPanel.layers.add(record);
+                                //app.mapPanel.layers.add(record);
+                                app.mapPanel.layers.insert(0, [record]);
                                 attr.layer = record.getLayer();
                                 return Ext.tree.TreeLoader.prototype.createNode.call(this, attr);
                             }
