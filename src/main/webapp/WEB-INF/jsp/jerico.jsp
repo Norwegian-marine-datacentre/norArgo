@@ -96,13 +96,62 @@
                         draggable:false,
                         id:'source',
                         children: [
-                            {"leaf":true,"id":2,"text":"Arctic"},
-                            {"leaf":true,"id":3,"text":"BLAC"},
-                            {"leaf":true,"id":4,"text":"BOOS"},
-                            {"leaf":true,"id":5,"text":"IBI"},
-                            {"leaf":true,"id":6,"text":"MON"},
-                            {"leaf":true,"id":7,"text":"NOOS"},
-                            {"leaf":true,"id":1,"text":"All"}
+                            {"leaf":false,"id":2,"text":"Arctic", "expanded":true,
+                                "children": [
+                                    {"leaf":true, "text":"Arctic Temperature", "area":"Arctic", "comment":"Temperature"},
+                                    {"leaf":true, "text":"Arctic Salinity", "area":"Arctic", "comment":"Salinity"},
+                                    {"leaf":true, "text":"Arctic Sealevel", "area":"Arctic", "comment":"Sealevel"},
+                                    {"leaf":true, "text":"Arctic Wave", "area":"Arctic", "comment":"Wave"}
+                                ]
+                            },
+                            {"leaf":false,"id":6,"text":"BLAC", "expanded":true,
+                                "children": [
+                                    {"leaf":true, "text":"BLAC Temperature", "area":"BLAC", "comment":"Temperature"},
+                                    {"leaf":true, "text":"BLAC Salinity", "area":"BLAC", "comment":"Salinity"},
+                                    {"leaf":true, "text":"BLAC Sealevel", "area":"BLAC", "comment":"Sealevel"},
+                                    {"leaf":true, "text":"BLAC Wave", "area":"BLAC", "comment":"Wave"}
+                                 ]
+                            },
+                            {"leaf":false,"id":10,"text":"BOOS", "expanded":true,
+                                "children": [
+                                    {"leaf":true, "text":"BOOS Temperature", "area":"BOOS", "comment":"Temperature"},
+                                    {"leaf":true, "text":"BOOS Salinity", "area":"BOOS", "comment":"Salinity"},
+                                    {"leaf":true, "text":"BOOS Sealevel", "area":"BOOS", "comment":"Sealevel"},
+                                    {"leaf":true, "text":"BOOS Wave", "area":"BOOS", "comment":"Wave"}
+                                 ]
+                            },                                  
+                            {"leaf":false,"id":14,"text":"IBI", "expanded":true,
+                                "children": [
+                                    {"leaf":true, "text":"IBI Temperature", "area":"IBI", "comment":"Temperature"},
+                                    {"leaf":true, "text":"IBI Salinity", "area":"IBI", "comment":"Salinity"},
+                                    {"leaf":true, "text":"IBI Sealevel", "area":"IBI", "comment":"Sealevel"},
+                                    {"leaf":true, "text":"IBI Wave", "area":"IBI", "comment":"Wave"}
+                                 ]
+                            },
+                            {"leaf":false,"id":18,"text":"MON", "expanded":true,
+                                "children": [
+                                    {"leaf":true, "text":"MON Temperature", "area":"MON", "comment":"Temperature"},
+                                    {"leaf":true, "text":"MON Salinity", "area":"MON", "comment":"Salinity"},
+                                    {"leaf":true, "text":"MON Sealevel", "area":"MON", "comment":"Sealevel"},
+                                    {"leaf":true, "text":"MON Wave", "area":"MON", "comment":"Wave"}
+                                 ]
+                            },
+                            {"leaf":false,"id":22,"text":"NOOS", "expanded":true,
+                                "children": [
+                                    {"leaf":true, "text":"NOOS Temperature", "area":"NOOS", "comment":"Temperature"},
+                                    {"leaf":true, "text":"NOOS Salinity", "area":"NOOS", "comment":"Salinity"},
+                                    {"leaf":true, "text":"NOOS Sealevel", "area":"NOOS", "comment":"Sealevel"},
+                                    {"leaf":true, "text":"NOOS Wave", "area":"NOOS", "comment":"Wave"}
+                                 ]
+                            },
+                            {"leaf":false,"id":26,"text":"All", "expanded":true,
+                                "children": [
+                                    {"leaf":true, "text":"All Temperature", "area":"All", "comment":"Temperature"},
+                                    {"leaf":true, "text":"All Salinity", "area":"All", "comment":"Salinity"},
+                                    {"leaf":true, "text":"All Sealevel", "area":"All", "comment":"Sealevel"},
+                                    {"leaf":true, "text":"All Wave", "area":"All", "comment":"Wave"}
+                                 ]
+                            }
                         ],
                         leaf: false
                     }));
@@ -119,12 +168,12 @@
                         var postGisLayer = null;
                         var MAPS_IMR_NO = "http://maps.imr.no/geoserver/wms?";
                         
-                        var sqlParam = "";
-                        if (record.text == "All") {
-                        	sqlParam = "";
-                        } else {
-                        	sqlParam = record.text;
-                        }
+//                         var sqlParam = "";
+//                         if (record.area == "All") {
+//                         	sqlParam = "";
+//                         } else {
+//                         	sqlParam = record.text;
+//                         }
                         var felayer = new OpenLayers.Layer.WMS(
                         	record.text,
                             MAPS_IMR_NO,
@@ -136,11 +185,11 @@
                                 isBaseLayer: false
                             }
                         );
-                        if (record.text != "All") {
-                            felayer.mergeNewParams({ viewparams:'type:'+record.text});
+                        if (record.attributes.area != "All") {
+                            felayer.mergeNewParams({ viewparams:'type:'+record.attributes.area + ';comment:'+record.attributes.comment });
                             gxp.plugins.WMSGetFeatureInfo.prototype.layerParams = ["viewparams"];
                         } else {
-                            felayer.mergeNewParams({ viewparams:'type:'+"%%"});
+                            felayer.mergeNewParams({ viewparams:'type:' + "%%" + ';comment:'+record.attributes.comment });
                             gxp.plugins.WMSGetFeatureInfo.prototype.layerParams = ["viewparams"];                        	
                         }
                         
