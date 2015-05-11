@@ -87,22 +87,31 @@
                     var treeRoot = Ext.ComponentMgr.all.find(function(c) {
                         return c instanceof Ext.tree.TreePanel;
                     });
+                    
+                    var JERICO = 'Jerico';
 
-					treeRoot.getRootNode().appendChild(new Ext.tree.AsyncTreeNode({
-					    text: 'Jerico',
-					    draggable:false,
-					    id:'source',
-					    children: [
-					               {"leaf":true,"id":2,"text":"Arctic"},
-					               {"leaf":true,"id":3,"text":"BLAC"},
-					               {"leaf":true,"id":4,"text":"BOOS"},
-					               {"leaf":true,"id":5,"text":"IBI"},
-					               {"leaf":true,"id":6,"text":"MON"},
-					               {"leaf":true,"id":7,"text":"NOOS"},
-					               {"leaf":true,"id":1,"text":"All"}]
-					}));
+                    treeRoot.getRootNode().appendChild(new Ext.tree.AsyncTreeNode({
+                        expanded: true,
+                        text: JERICO,
+                        draggable:false,
+                        id:'source',
+                        children: [
+                            {"leaf":true,"id":2,"text":"Arctic"},
+                            {"leaf":true,"id":3,"text":"BLAC"},
+                            {"leaf":true,"id":4,"text":"BOOS"},
+                            {"leaf":true,"id":5,"text":"IBI"},
+                            {"leaf":true,"id":6,"text":"MON"},
+                            {"leaf":true,"id":7,"text":"NOOS"},
+                            {"leaf":true,"id":1,"text":"All"}
+                        ],
+                        leaf: false
+                    }));
 					
                     treeRoot.on('click', function(record, view, item, index, evt, eOpts) {
+                        
+                        if (record.text == JERICO) {
+                            return;
+                        }
                         
                         var mapPanel = Ext.ComponentMgr.all.find(function(c) {
                             return c instanceof GeoExt.MapPanel;

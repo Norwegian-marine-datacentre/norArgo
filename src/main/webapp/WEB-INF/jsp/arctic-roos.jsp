@@ -88,25 +88,33 @@
                         return c instanceof Ext.tree.TreePanel;
                     });
                     
-                    treeRoot.getRootNode().appendChild(new Ext.tree.AsyncTreeNode({
-                        text: 'Arctic ROOS',
-                        loader: new Ext.tree.TreeLoader({url: 'spring/getChildNodes'})
+                    var ARTIC_ROOS = 'Arctic ROOS';
+                    
+                    treeRoot.getRootNode().appendChild(
+                            new Ext.tree.AsyncTreeNode({
+                                expanded: true,
+                                text: ARTIC_ROOS,
+                                loader: new Ext.tree.TreeLoader({url: 'spring/getChildNodes'})
                     }));
                     treeRoot.on('click', function(record, view, item, index, evt, eOpts) {
+                        
+                        if (record.text == ARTIC_ROOS) {
+                            return;
+                        }
 						
-						var mapPanel = Ext.ComponentMgr.all.find(function(c) {
-			                return c instanceof GeoExt.MapPanel;
-			            });
-						var postGisLayer = null;
-						var MAPS_IMR_NO = "http://maps.imr.no/geoserver/wms?";
+                        var mapPanel = Ext.ComponentMgr.all.find(function(c) {
+                            return c instanceof GeoExt.MapPanel;
+                        });
+                        var postGisLayer = null;
+                        var MAPS_IMR_NO = "http://maps.imr.no/geoserver/wms?";
 
-                   	    var typeValue = "";
-                   	    var style = "";
-                   	    var name = "";
-						if ( record.attributes.id == 1 ) {
-							typeValue = "BA";
-							style = "arcticroos_gtsbathy";
-							name = "GTS bathy";
+                        var typeValue = "";
+                        var style = "";
+                        var name = "";
+                        if ( record.attributes.id == 1 ) {
+                            typeValue = "BA";
+                            style = "arcticroos_gtsbathy";
+                            name = "GTS bathy";
                    	 	} else if ( record.attributes.id == 2 ) {
                    	 		typeValue = "CT";
                    	 		style = "arcticroos_ctd";
