@@ -98,7 +98,7 @@
                     }));
                     treeRoot.on('click', function(record, view, item, index, evt, eOpts) {
                         
-                        if (record.text == ARTIC_ROOS) {
+                        if (record.text == ARTIC_ROOS || record.text == "Overlays" ) {
                             return;
                         }
 						

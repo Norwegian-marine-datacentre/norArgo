@@ -110,6 +110,7 @@
                                 
                                 var record = app.layerSources.ol.createLayerRecord({
                                     type: 'OpenLayers.Layer.WMS', 
+                                    queryable: true,
                                     args: [
                                            attr.text, 
                                            MAPS_IMR_NO, 

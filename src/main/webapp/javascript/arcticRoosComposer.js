@@ -17,10 +17,24 @@
  */
 Ext.ns("ArcticRoos.plugins");
 
+
+(function() {
+    Ext.preg("gxp_layermanager", gxp.plugins.LayerTree);
+})();
+
 ArcticRoos.Composer  = Ext.extend(GeoExplorer.Composer, {
     constructor: function() {
     	ArcticRoos.Composer.superclass.constructor.apply(this, arguments);  
     	this.on("beforecreateportal", this.modifyPortal, this);
+    },
+    
+    loadConfig: function(config) {
+        
+        config.tools.splice(0, 0 ,{
+            ptype: "gxp_legend",
+            outputTarget: "legend"
+        });
+        ArcticRoos.Composer.superclass.loadConfig.call(this, config);
     },
     
     modifyPortal: function() {
@@ -82,6 +96,47 @@ ArcticRoos.Composer  = Ext.extend(GeoExplorer.Composer, {
 "        </div></div>"            
         }); 
         
-        this.portalItems[0].items.push( northPanel );
+        var westPanel = new gxp.CrumbPanel({
+            region: "center",
+            width: 320,
+            height: 300,
+            split: true,
+            id: "tree",
+            collapsible: true,
+            collapseMode: "mini",
+            hideCollapseTool: true,
+            header: false,
+            border: true,
+            collapsible: true,
+            collapseMode: "mini"
+        });
+
+        this.portalItems = [{
+            region: "center",
+            layout: "border",
+            tbar: toolbar,
+            items: [
+                northPanel,
+                this.mapPanelContainer,
+                {
+                  xtype: "panel",
+                  region: "west",
+                  width: 200,
+                  layout: "border",
+                  items: [
+                    westPanel, {
+                      xtype: "panel",
+                      region: "south",
+                      id: "legend",
+                      height: 200,
+                      layout: "fit",
+                      border: true,
+                      collapsible: true,
+                      collapseMode: "mini"
+                  }]
+                }
+            ]
+        }];
+        
     }
 });
