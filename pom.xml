@@ -326,7 +326,7 @@
 								<!-- copy Ext resources -->
 								<copy todir="${war-src}/WEB-INF/app/static/externals/ext">
 									<fileset dir="boundless/geoexplorer/app/static/externals/ext">
-										<exclude name="**/*debug*.js" />
+										<!-- exclude name="**/*debug*.js" / -->
 										<exclude name="**/ext-all-notheme.css" />
 										<exclude name="**/xtheme-blue.css" />
 									</fileset>
