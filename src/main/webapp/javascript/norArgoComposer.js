@@ -18,9 +18,14 @@
 Ext.ns("NorArgo.plugins");
 
 NorArgo.Composer  = Ext.extend(GeoExplorer.Composer, {
-    constructor: function() {
+    constructor: function(config) {
     	NorArgo.Composer.superclass.constructor.apply(this, arguments);
         this.on("beforecreateportal", this.modifyPortal, this);
+        console.log("config is",config)
+        config.tools.push( {
+                actions: ["loginbutton"],
+                actionTarget: "paneltbar"
+            });
     },
     
     modifyPortal: function() {
@@ -40,5 +45,6 @@ NorArgo.Composer  = Ext.extend(GeoExplorer.Composer, {
         });   
         
         this.portalItems[0].items.push( northPanel );
-    }    
+    }
+    
 });
