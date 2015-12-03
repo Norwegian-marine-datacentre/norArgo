@@ -2,14 +2,19 @@ package no.imr.geoexplorer.arctic.roos.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import no.imr.geoexplorer.arctic.roos.pojo.ArcticRoosPojo;
+import no.imr.geoexplorer.dao.ArcticRoosDAO;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -23,12 +28,29 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class ArcticRoos {
 
+    @Autowired
+    ArcticRoosDAO arcticRoosDAO;
+    
     @RequestMapping("/arctic-roos.html")
     public ModelAndView arcticRoos(HttpServletResponse resp) throws IOException {
-    	return new ModelAndView("arctic-roos");
+//    	return new ModelAndView("arctic-roos");
+         	return new ModelAndView("arcticRoos");
+
     }
     
-	@RequestMapping("/getChildNodes")
+      
+    @RequestMapping("/arcticRoos")
+    public String  arcticRoosInit(Model model)  {
+        return "arcticRoos";
+    }
+    
+    @RequestMapping("/arcticRoos/layers")
+    public @ResponseBody List  arcticRoosLayers(Model model)  {
+        return arcticRoosDAO.getFloatLayers();
+    }
+ 
+    
+    @RequestMapping("/getChildNodes")
     public @ResponseBody List<ArcticRoosPojo> getChildNodesAsJson(HttpServletRequest request, @RequestParam("node") String node) {
 		ArrayList<ArcticRoosPojo> l = new ArrayList<ArcticRoosPojo>();
 		if (node.contains("xnode")) {
@@ -96,4 +118,16 @@ public class ArcticRoos {
 			HttpServletRequest request) throws Exception {
 		return null;
 	}
+        
+        
+    @RequestMapping("/arcticRoos/platformMeaurement")
+    public @ResponseBody Map getMeasurementValues(
+            @RequestParam("id") String ID,
+            @RequestParam("date") String date) {
+        
+        return arcticRoosDAO.getMeasurementProfile(ID, date);
+    }
+
+        
+        
 }
