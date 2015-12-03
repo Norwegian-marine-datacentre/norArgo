@@ -36,5 +36,19 @@ public class ApplicationConfig {
         }
         return configuration;
     }
+    
+    /**
+     * Configuration object for communicating with property data.
+     *
+     * @return Configuration object containg properties.
+     * @throws ConfigurationException Error during instansiation.
+     */
+    @Bean
+    public org.apache.commons.configuration.Configuration arcticRoosConfiguration() throws ConfigurationException, Exception {
+        org.apache.commons.configuration.PropertiesConfiguration configuration;
+            configuration = new org.apache.commons.configuration.PropertiesConfiguration(System.getProperty("catalina.base") + "/conf/arcticRoos.properties");
+        return configuration;
+    }
+    
 }
 
