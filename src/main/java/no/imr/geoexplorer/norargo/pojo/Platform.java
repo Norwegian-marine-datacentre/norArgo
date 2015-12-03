@@ -17,7 +17,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
  */
 @JsonIgnoreProperties({ "lastEdited", "wmoPlatformCode"})
 @Entity
-@Table(name="platform", schema="floats")
+@Table(name="platform", schema="newfloats")
 public class Platform implements NorArgoJson {
     @Column(name="id")
     @Id
@@ -32,7 +32,9 @@ public class Platform implements NorArgoJson {
     @Transient
     private boolean leaf = true;
     @Transient
-    private String layer = "norargo_lines";
+    //private String layer = "norargo_lines";
+    private String layer = "norargo_lines_dev";
+    
     
     public String getId() {
         return id;

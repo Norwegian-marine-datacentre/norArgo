@@ -18,7 +18,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
  */
 @JsonIgnoreProperties({ "id", "last_edited", "latitude","longitude","original","platform","date","geometry" })
 @Entity
-@Table(name="measurement", schema="floats")
+@Table(name="measurement", schema="newfloats")
 public class Measurement implements NorArgoJson {
     @Id
     @Column(name="id")
@@ -46,7 +46,8 @@ public class Measurement implements NorArgoJson {
     @Transient
     private String idPlatform;
     @Transient
-    private String layer = "norargo_points";
+//    private String layer = "norargo_points";
+    private String layer = "norargo_points_dev";
     
     public Platform getPlatform() {
         return platform;

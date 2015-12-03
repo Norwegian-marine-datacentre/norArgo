@@ -14,7 +14,8 @@ public class LastPositions implements NorArgoJson {
     @Transient
     private String id = "Alle floats";    
     @Transient
-    private String layer = "norargo_all_points";    //norargo_last60daysmovement
+    //private String layer = "norargo_all_points";    //norargo_last60daysmovement
+    private String layer = "norargo_all_points_dev";    //norargo_last60daysmovement
     
     public boolean isLeaf() {
         return leaf;
