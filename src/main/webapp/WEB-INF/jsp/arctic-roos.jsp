@@ -29,11 +29,16 @@
         <link rel="stylesheet" type="text/css" href="theme/ux/colorpicker/color-picker.ux.css" />
         <script type="text/javascript" src="script/GeoExplorer-debug.js"></script>
         
+        
+           <script src="http://code.highcharts.com/highcharts.js"></script>
+        <script type="text/javascript" src="javascript/arcticRoosTools.js"></script>
+        
         <link rel="stylesheet" type="text/css" href="javascript/ploneStyles0098.css" />
         <link rel="stylesheet" type="text/css" href="javascript/ploneStyles2714.css" />
         <link rel="stylesheet" type="text/css" href="javascript/ploneStyles4755.css" />
         
         <script type="text/javascript" src="javascript/arcticRoosComposer.js"></script>
+        <link rel="stylesheet" type="text/css" href="javascript/arcticRoosHeader.css" />
 
         <script>
         	var app;
@@ -45,7 +50,6 @@
                 OpenLayers.ImgPath = "theme/app/img/";
                 GeoExt.Lang.set('en');
                 app = new ArcticRoos.Composer({
-                    <!-- authStatus: < status >, -->
                     proxy: "proxy/?url=",
                     printService: null,
                     about: {
@@ -62,6 +66,7 @@
                     map: {
                     	projection: "EPSG:3575",
                     	units: "m",
+                       
                     	maxResolution: 115832.0,
                     	maxExtent: [-4E7, -4E7, 4E7, 4E7],
                     	numZoomLevels: 18,
@@ -87,6 +92,9 @@
                     var treeRoot = Ext.ComponentMgr.all.find(function(c) {
                         return c instanceof Ext.tree.TreePanel;
                     });
+                     
+              //   var p = new ProfileDisplay();
+	 ProfileDisplay.attachTo(app.mapPanel);
                     
                     var ARTIC_ROOS = 'Arctic ROOS';
                     
@@ -179,5 +187,23 @@
         </script>
     </head>
     <body onload="init()">
+        <div id="headerDiv" class="invisible">
+            <div id="header" class="without-secondary-menu"><div class="section clearfix">
+                    <a href="http://arctic-roos.org/" title="Home" rel="home" id="logo">'
+                        <img src="http://arctic-roos.org/sites/default/files/logo-aroos.png" alt="Home" />
+                    </a>
+                    <div id="name-and-slogan">
+
+                        <div id="site-name">
+                            <strong>
+                                <a href="http://arctic-roos.org/" title="Home" rel="home" class="hlink" ><span>Arctic Regional Ocean Observing System</span></a>
+                            </strong>
+                        </div>
+                        <div id="site-slogan">
+                            - a regional node under EuroGOOS - the European Global Ocean Observing System          </div>
+                    </div> <!-- /#name-and-slogan -->'
+
+                </div> 
+
     </body>
 </html>
