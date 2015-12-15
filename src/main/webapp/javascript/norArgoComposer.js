@@ -22,10 +22,7 @@ NorArgo.Composer  = Ext.extend(GeoExplorer.Composer, {
     	NorArgo.Composer.superclass.constructor.apply(this, arguments);
         this.on("beforecreateportal", this.modifyPortal, this);
         console.log("config is",config)
-        config.tools.push( {
-                actions: ["loginbutton"],
-                actionTarget: "paneltbar"
-            });
+      
     },
     
     modifyPortal: function() {
@@ -41,7 +38,7 @@ NorArgo.Composer  = Ext.extend(GeoExplorer.Composer, {
             id: "topPanelHeading",
             collapseMode: "mini",
             html:"" +
-            "<div style=\"float:left;\">NorArgo</div><div style=\"float:right;\"><img src=\"javascript/background_top_trans.jpg\"/></div>"       
+                       "<div style=\"float:left;font-size:24px;height:60px;width:900px;text-align:center;padding-top:45px\">NorArgo: en Norsk Argo infrastruktur</div><div style=\"float:right;\"><img src=\"javascript/background_top_trans.jpg\"/></div>"       
         });   
         
         this.portalItems[0].items.push( northPanel );

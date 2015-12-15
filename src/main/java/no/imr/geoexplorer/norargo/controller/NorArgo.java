@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -18,9 +17,10 @@ import no.imr.geoexplorer.dao.NorArgoDao;
 import no.imr.geoexplorer.norargo.pojo.DepthMeasurementValue;
 import no.imr.geoexplorer.norargo.pojo.LastPositions;
 import no.imr.geoexplorer.norargo.pojo.Measurement;
-import no.imr.geoexplorer.norargo.pojo.MeasurementSeries;
 import no.imr.geoexplorer.norargo.pojo.NorArgoElement;
 import no.imr.geoexplorer.norargo.pojo.NorArgoJson;
+import no.imr.geoexplorer.norargo.pojo.Platform;
+import org.apache.commons.configuration.Configuration;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
@@ -28,12 +28,10 @@ import org.jfree.chart.encoders.EncoderUtil;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -53,20 +51,19 @@ public class NorArgo {
     @Autowired
     private NorArgoDao dao;
     
-    @RequestMapping("/norArgo.html")
-    public ModelAndView arcticRoos(HttpServletResponse resp) throws IOException {
-        return new ModelAndView("norArgo");
-    }
+    @Autowired
+    private Configuration configuration ;
     
-    @RequestMapping("/norArgo_openlayers.html")
-    public ModelAndView arcticRoos_new(HttpServletResponse resp) throws IOException {
-        return new ModelAndView("norArgo_openlayers");
-    }
     
-    @RequestMapping("/norArgo_newer.html")
-    public ModelAndView arcticRoos_newer(HttpServletResponse resp) throws IOException {
-        return new ModelAndView("norArgo_newer");
-    }    
+    @RequestMapping("/map")
+    public ModelAndView map(HttpServletResponse resp) throws IOException {
+        ModelAndView modelView = new ModelAndView("norArgo");
+        modelView.addObject("headLayer",configuration.getString("layer.currentActivePostion"));
+        modelView.addObject("tailLayer",configuration.getString("layer.currentActivePath"));
+        
+         
+        return  modelView;
+    }
     
     @RequestMapping("/getNorArgoChildNodes.html")
     public @ResponseBody List<NorArgoJson> getNorArgoChildNodesAsJson(HttpServletResponse resp) throws IOException {
@@ -77,9 +74,16 @@ public class NorArgo {
             e = new HashMap<String, NorArgoJson>(m.size());
             
             for ( Measurement mes : m ) {
+                
+                mes.setLayer(configuration.getString("layer.allPositions"));
                 NorArgoElement el = new NorArgoElement();
                 el.setMeasurement( mes );
+                
+                Platform p = mes.getPlatform();
+                p.setLayer(configuration.getString("layer.allPaths"));
                 el.setPlatform( mes.getPlatform() );
+                
+                
                 String wmo = mes.getPlatform().getWmoPlatformCode();
                 el.setText( wmo );
                 e.put( wmo, el );

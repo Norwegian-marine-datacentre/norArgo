@@ -9,8 +9,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import org.apache.commons.configuration.Configuration;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 /**
  * Punkter
  * @author endrem
@@ -18,8 +20,9 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
  */
 @JsonIgnoreProperties({ "id", "last_edited", "latitude","longitude","original","platform","date","geometry" })
 @Entity
-@Table(name="measurement", schema="newfloats")
+@Table(name="measurement", schema="floats")
 public class Measurement implements NorArgoJson {
+    
     @Id
     @Column(name="id")
     private String id;
@@ -46,8 +49,9 @@ public class Measurement implements NorArgoJson {
     @Transient
     private String idPlatform;
     @Transient
-//    private String layer = "norargo_points";
-    private String layer = "norargo_points_dev";
+     private String layer;
+  //    private String layer = "norargo_points";
+   // private String layer = "norargo_points_dev";
     
     public Platform getPlatform() {
         return platform;

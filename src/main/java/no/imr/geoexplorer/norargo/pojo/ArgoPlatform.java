@@ -11,10 +11,27 @@ public class ArgoPlatform {
     String program;
     String country;
     String model;
-    double  startLatitude;
-    double  startLongitude;
     String startDate;
+    String link;
+    String WMOCode;
 
+    public String getWMOCode() {
+        return WMOCode;
+    }
+
+    public void setWMOCode(String WMOCode) {
+        this.WMOCode = WMOCode;
+    }
+    int profileCount;
+
+    public int getProfileCount() {
+        return profileCount;
+    }
+
+    public void setProfileCount(int profileCount) {
+        this.profileCount = profileCount;
+    }
+    
     public String getProgram() {
         return program;
     }
@@ -39,22 +56,7 @@ public class ArgoPlatform {
         this.model = model;
     }
 
-    public double getStartLatitude() {
-        return startLatitude;
-    }
-
-    public void setStartLatitude(double startLatitude) {
-        this.startLatitude = startLatitude;
-    }
-
-    
-    public double getStartLongitude() {
-        return startLongitude;
-    }
-
-    public void setStartLongitude(double startLongitude) {
-        this.startLongitude = startLongitude;
-    }
+   
 
     public String getStartDate() {
         return startDate;
@@ -62,6 +64,14 @@ public class ArgoPlatform {
 
     public void setStartDate(String startDate) {
         this.startDate = startDate;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
     }
 
     

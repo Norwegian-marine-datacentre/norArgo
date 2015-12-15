@@ -3,7 +3,6 @@ package no.imr.geoexplorer.norargo.pojo;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.persistence.Transient;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 

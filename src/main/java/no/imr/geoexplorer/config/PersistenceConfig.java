@@ -13,8 +13,6 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import no.imr.geoexplorer.dao.ArcticRoosDAO;
-import no.imr.geoexplorer.dao.ArcticRoosDAOImpl;
 
 
 /**
@@ -29,11 +27,7 @@ public class PersistenceConfig {
 
     @Autowired
     private org.apache.commons.configuration.Configuration configuration;
-
-    @Autowired
-    private org.apache.commons.configuration.Configuration arcticRoosConfiguration;
-
-    
+   
     /**
      * Datasource pool.
      *
@@ -51,26 +45,6 @@ public class PersistenceConfig {
          datasource.setUser(configuration.getString("jdbc.user"));
          datasource.setPassword(configuration.getString("jdbc.password"));
          datasource.setJdbcUrl(configuration.getString("jdbc.url"));
-         return datasource;
-     }
-
-    /**
-     * Datasource pool for arcticRoos.
-     *
-     * @return Pooled data source.
-     */
-     @Bean(name = "arcticRoosDataSource")
-     public ComboPooledDataSource arcticRoosDatasource() throws PropertyVetoException {
-         ComboPooledDataSource datasource = new ComboPooledDataSource();
-         datasource.setAcquireIncrement(arcticRoosConfiguration.getInt("jdbc.acquireIncrement"));
-         datasource.setIdleConnectionTestPeriod(arcticRoosConfiguration.getInt("jdbc.idleConnectionTestPeriod"));
-         datasource.setInitialPoolSize(arcticRoosConfiguration.getInt("jdbc.initialPoolSize"));
-         datasource.setMinPoolSize(arcticRoosConfiguration.getInt("jdbc.minPoolSize"));
-         datasource.setMaxPoolSize(arcticRoosConfiguration.getInt("jdbc.maxPoolSize"));
-         datasource.setDriverClass(arcticRoosConfiguration.getString("jdbc.driver"));
-         datasource.setUser(arcticRoosConfiguration.getString("jdbc.user"));
-         datasource.setPassword(arcticRoosConfiguration.getString("jdbc.password"));
-         datasource.setJdbcUrl(arcticRoosConfiguration.getString("jdbc.url"));
          return datasource;
      }
 
@@ -95,10 +69,6 @@ public class PersistenceConfig {
         JpaTransactionManager txManager = new JpaTransactionManager();
         return txManager;
     }
-    
-    @Bean
-    public ArcticRoosDAO arcticRoosDAO() {
-        return new ArcticRoosDAOImpl();
-    }
+   
             
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.math.BigInteger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -30,9 +31,9 @@ public class NorArgoDaoImpl implements NorArgoDao {
 
     public final String GET_ALL_FLOAT_MEASUREMENT_VALUES = " SELECT short_name,"
             + "value "
-            + " FROM newfloats.measurementvaluetype mvt,"
-            + " newfloats.measurementvalues mv,"
-            + "  newfloats.measurement m "
+            + " FROM floats.measurementvaluetype mvt,"
+            + " floats.measurementvalues mv,"
+            + "  floats.measurement m "
             + "  where id_platform =:platformID "
             + "  and date = to_date(:date,'YYYY-MM-DD') "
             //        + "  and latitude = :latitude"
@@ -41,14 +42,11 @@ public class NorArgoDaoImpl implements NorArgoDao {
             + "  and mvt.id = mv.id_measurementvaluetype "
             + "  order by short_name,mv.last_edited ";
 
-    
-     // SELECT    row_number() OVER () as depth,
-    
     public final String GET_FLOAT_MEASUREMENT_VALUES = " SELECT    depth, " 
             + "value "
-            + " FROM newfloats.measurementvaluetype mvt,"
-            + " newfloats.measurementvalues mv,"
-            + "  newfloats.measurement m "
+            + " FROM floats.measurementvaluetype mvt,"
+            + " floats.measurementvalues mv,"
+            + "  floats.measurement m "
             + "  where id_platform =:platformID "
             + "  and date = to_date(:date,'YYYY-MM-DD') "
             + "  and m.id = mv.id_measurement"
@@ -58,13 +56,13 @@ public class NorArgoDaoImpl implements NorArgoDao {
 
     public final String GET_FLOAT_MEASUREMENT_TYPES = " SELECT short_name,"
             + "       units, description "
-            + "  FROM newfloats.measurementvaluetype "
+            + "  FROM floats.measurementvaluetype "
             + "  where"
             + "  short_name != 'PRES' and  "
             + "  id in  ("
             + "  select  id_measurementvaluetype "
-            + "  from newfloats.measurementvalues mv,"
-            + "  newfloats.measurement m "
+            + "  from floats.measurementvalues mv,"
+            + "  floats.measurement m "
             + "  where id_measurement =  m.id and"
             + "  m.id_platform =:platformID "
             + " and date = to_date(:date,'YYYY-MM-DD') "
@@ -73,12 +71,18 @@ public class NorArgoDaoImpl implements NorArgoDao {
       public final String GET_PLATFORM_INFO = " SELECT program ,"
               + " country ,"
               + " model,"
-              + "  to_char(start_date,'DD-MM-YYYY'),"
-              + "  start_latitude,"
-              + "  start_longitude "
-            + "  FROM newfloats.argo "
-            + "  where"
-            + "   id_platform = :platformID ";
+              + "  to_char(start_date,'YYYY-MM-DD'),"
+              + "  url,"
+              + "  wmo_platform_code"
+              + "  FROM floats.platform "
+              + "  where"
+              + "   id = :platformID ";
+      
+      
+      public final String COUNT_PLATFORM_PROFILES = " SELECT count(*)"
+              + "  FROM floats.measurement "
+              + "  where"
+              + "   id_platform = :platformID ";
     
     
         /**
@@ -96,11 +100,8 @@ public class NorArgoDaoImpl implements NorArgoDao {
 
     @Override
     public List<Measurement> findAllMeasurement() {
-
- //              return (List<Measurement>) entityManager.createQuery("select m from Measurement m")
      return (List<Measurement>) entityManager.createQuery("select m from Measurement m")
                 .getResultList();
-
     }
 
     @Override
@@ -112,7 +113,7 @@ public class NorArgoDaoImpl implements NorArgoDao {
 
     @Override
     public List<LastPositions> findSisteKjentePosisjon() {
-        return (List<LastPositions>) entityManager.createQuery("select c FROM newfloats.currentmeasurement c")
+        return (List<LastPositions>) entityManager.createQuery("select c FROM floats.currentmeasurement c")
                 .getResultList();
     }
 
@@ -194,8 +195,14 @@ public class NorArgoDaoImpl implements NorArgoDao {
          result.setCountry((String) rawResult[1]);
          result.setModel((String) rawResult[2]);
          result.setStartDate((String) rawResult[3]);
-         result.setStartLatitude( (Double) rawResult[4]);
-         result.setStartLongitude( (Double) rawResult[4]);
+         result.setLink((String) rawResult[4]);
+         result.setWMOCode((String) rawResult[5]);
+ 
+         query = entityManager.createNativeQuery(COUNT_PLATFORM_PROFILES);
+         query.setParameter("platformID", platformID);
+        
+        result.setProfileCount(((BigInteger) query.getSingleResult()).intValue());
+         
         
         return result;
     }
