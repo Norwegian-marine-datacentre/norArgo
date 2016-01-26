@@ -44,7 +44,10 @@
     <script>
         var headLayer="${headLayer}";
         var tailLayer="${tailLayer}";
-        
+        var positionLayer="${positionLayer}";
+        var pathLayer="${pathLayer}";
+        var floatList=${floatList};
+        var floatsByCountry=${floatsByCountry};
         
     </script>
     

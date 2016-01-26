@@ -23,11 +23,10 @@ var ProfileDisplay = {
             return x.get("queryable") && !self.layerIDs[x.id];
         });
 
-        console.log("map ", this.map.map.center, this.map.map.resolution);
+
 
         layers.each(function layer(x) {
             var layer = x.getLayer();
-//	    console.log("a",layer,layer.params.ISPROFILE);
 
 
             //Only interested in platform points
@@ -154,8 +153,6 @@ var ProfileDisplay = {
                         items: chartPanel
                     });
                     panel.add(tab);
-
-
                 });
 
                 panel.setActiveTab(0);
@@ -196,10 +193,6 @@ var ProfileDisplay = {
     showGraphs: function (featureEvent) {
         var self = this;
 
-        console.log(featureEvent.features);
-	console.log("Got:"+featureEvent.features.length);
-	
-
         var identify = false;
         jQuery.each(this.map.map.getControlsByClass('OpenLayers.Control.WMSGetFeatureInfo'), function (i, control) {
             if ((control.active) && (!control.isProfile)) {
@@ -209,8 +202,7 @@ var ProfileDisplay = {
         });
         if (identify) {
             return
-        }
-        ;
+        };
 
         if (!this.win) {
             this.win = new Ext.Window({
@@ -229,7 +221,6 @@ var ProfileDisplay = {
                     }}
             });
         }
-
 
         Ext.Ajax.request({
             url: 'spring/norArgo/platformMeaurement/metaData',
@@ -269,9 +260,6 @@ var ProfileDisplay = {
 
 Ext.onReady(function () {
     
-    
-    console.log("Using layer:"+headLayer);
-    
     OpenLayers.ImgPath = "theme/app/img/";
     GeoExt.Lang.set('en');
     app = new NorArgo.Composer({
@@ -289,34 +277,50 @@ Ext.onReady(function () {
             }
         },
         map: {
-            projection: "EPSG:3575",
-            units: "m",
-            //      maxResolution: 115832.0,
-            maxResolution: 14479.0,
-            maxExtent: [-4E7, -4E7, 4E7, 4E7],
-            numZoomLevels: 10,
-            wrapDateLine: false,
+            //projection: "EPSG:3575",
+	    projection: "EPSG:4326",
+            //units: "m",
+	    units: "degrees",
+            
+            //maxResolution: 14479.0,
+            //maxExtent: [-85, 35, 40, 85],
+            //numZoomLevels: 10,
+            //wrapDateLine: false,
             layers: [
-                {
+		{
+		source: "ol",
+                type: "OpenLayers.Layer.WMS",
+                group: "background",
+		args: [
+                        "Arctic",
+                        "http://maps.imr.no/geoserver/wms",
+                        {layers: "WORLD_NP_LAEA_WGS84", format: "image/jpeg", transparent: true, isBaseLayer: true, styles: "arcticroos_contry"}
+                ]},
+		 {
                     source: "ol",
                     type: "OpenLayers.Layer.WMS",
                     group: "background",
                     args: [
-                        "Arctic",
-                        "http://maps.imr.no/geoserver/wms",
-                        {layers: "WORLD_NP_LAEA_WGS84", format: "image/jpeg", transparent: true, isBaseLayer: true, styles: "arcticroos_contry"}
+                        "Gebco",
+                        "http://www.gebco.net/data_and_products/gebco_web_services/web_map_service/mapserv?",
+                        {layers: "gebco_latest", format: "image/png", transparent: false, isBaseLayer: true}
                     ]
+		    //args: [
+                    //    "Arctic",
+                    //    "http://maps.imr.no/geoserver/wms",
+                    //    {layers: "WORLD_NP_LAEA_WGS84", format: "image/jpeg", transparent: true, isBaseLayer: true, styles: "arcticroos_contry"}
+                    // ]
                 }
             ],
-            //                        center: [ 0,0],
-            center: [-1514367.8917845, -2035476.4551685],
-            //center: [-517363.6417845,-2106729.6426685],
-            zoom: 1
+	    center: [-12.392578125, 54.5361328125],
+            zoom: 4
         }
     });
 
-    function createProfileLayer(name, layerName, visible) {
-        var result = app.layerSources.ol.createLayerRecord({
+
+    function createLayerRecord(name,layerName,isProfile,visible)
+    {
+	return app.layerSources.ol.createLayerRecord({
             type: 'OpenLayers.Layer.WMS',
             queryable: true,
             args: [
@@ -325,8 +329,7 @@ Ext.onReady(function () {
                 {
                     LAYERS: layerName,
                     TRANSPARENT: 'TRUE',
-                    viewparams: "",
-                    isProfile: true
+                    isProfile: isProfile
                 },
                 {
                     displayInLayerSwitcher: false,
@@ -335,11 +338,10 @@ Ext.onReady(function () {
             ],
             visibility: visible
         });
-        app.mapPanel.layers.insert(0, [result]);
-        return result;
     }
 
 
+    
     var MAPS_IMR_NO = "http://maps.imr.no/geoserver/wms?";
     var layers = [];
 
@@ -347,7 +349,7 @@ Ext.onReady(function () {
 
         //Inject custom actions
         ProfileDisplay.attachTo(app.mapPanel);
-        
+         
         var treeRoot = Ext.getCmp('layers').getRootNode();
         var floatsTree = new Ext.tree.TreeNode({
             text: 'NorArgo',
@@ -357,86 +359,93 @@ Ext.onReady(function () {
         var layer;
         var node;
 
-        layer = createProfileLayer("Alle floats", headLayer, true);
+        layer = createLayerRecord("Alle floats", headLayer,true, true);
+	app.mapPanel.layers.add(layer);
         node = {nodeType: "gx_layer", "leaf": true, "text": "Alle floats", "layer": layer.getLayer(), "id": "sist60_point"}
+
         floatsTree.appendChild(node);
 
-        layer = createProfileLayer("Siste 60 dager path",tailLayer, true);
-        node = {nodeType: "gx_layer", "leaf": true, "text": "Siste 60 dager", "layer": layer.getLayer(), "id": "sist60"}
+        var defaultDaysLayer = createLayerRecord("Siste 60 dager path",tailLayer,true, true);
+	app.mapPanel.layers.add(defaultDaysLayer);
+        node = {nodeType: "gx_layer", "leaf": true, "text": "Siste 60 dager", "layer": defaultDaysLayer.getLayer(), "id": "sist60"}
         floatsTree.appendChild(node);
 
-        var layerList = [];
-        /* For better performance all layers should be added to layer store via one
-         * call to add/insert instead of as they are created.  So will push layers
-         * into layerLIst array then add array
-         */
-//		    var root = treeRoot.getRootNode().appendChild(new Ext.tree.AsyncTreeNode({
-        var root = floatsTree.appendChild(new Ext.tree.AsyncTreeNode({
-            text: 'Floats',
-            loader: new Ext.tree.TreeLoader({
-                url: 'spring/getNorArgoChildNodes.html',
-                createNode: function (attr) {
-                    attr.nodeType = "gx_layer";
+	floatsTree.appendChild(new Ext.tree.TreeNode({ "expandable": true, "text":"Custom period path", listeners: {
+	    click: function ( node,e ){
+		Ext.Msg.prompt('Custom period', 'Please enter days :', function(btn, text){
+		    if (btn == 'ok'){
+			if (/^([0-9]+)$/.test(text)) {
+			    layerRecord = createLayerRecord("custom"+text,"norargo_days_path_dev",false,true);
+			    layerRecord.getLayer().params.VIEWPARAMS="days:"+text
+			    app.mapPanel.layers.add(layerRecord);			
+			    defaultDaysLayer.getLayer().visibility=false;
+			    newNode = {nodeType: "gx_layer", "leaf": true, "text": "Siste "+text+" dager", "layer": layerRecord.getLayer(), "idx": "sist"+text}
+			    node.appendChild(newNode);
+			    node.expand();
+			} else {
+			    Ext.Msg.alert('','Invalid number of days');
+			}
+		    }
+		});
+	    }
+	}}));
 
-                    var layerText;
-                    var sqlParam;
-                    var profile;
-                    if (attr.text == "Punkter") {
-                        var id = attr.idPlatform;
-                        sqlParam = 'id_platform:' + id;
-                        layerText = "Punkter";
-                        profile = true;
-                    } else if (attr.text == "Linjer") {
-                        var id = attr.id;
-                        sqlParam = 'id:' + id;
-                        layerText = "Linjer";
-                        profile = false;
-                    }
+	var flTree = new Ext.tree.TreeNode({ "expandable": true, "text": "Floats",  "id": "floatList"});
+	for (var i = 0; i < floatList.length; i++) {
+	    flTree.appendChild(new Ext.tree.TreeNode({ "expandable": true, "text": floatList[i].wmo_platform_code+' - '+floatList[i].country,  platform_id: floatList[i].id, listeners: {
+		expand: function ( node, deep, anim ){
+		    if (!node.firstChild) {
+			var layerRecord = createLayerRecord("Punkter",positionLayer,true,false);
+			layerRecord.getLayer().params.VIEWPARAMS="id_platform:"+node.attributes.platform_id;
+			//app.mapPanel.layers.insert(0, layerRecord);
+			app.mapPanel.layers.add(layerRecord);
+			node.appendChild({nodeType: "gx_layer","leaf":true,"text":"Punkter","layer":layerRecord.getLayer()});
+			
+			layerRecord = createLayerRecord("Linjer",pathLayer,false,false);
+			layerRecord.getLayer().params.VIEWPARAMS="id:"+node.attributes.platform_id;
+			//app.mapPanel.layers.insert(0, layerRecord);
+			app.mapPanel.layers.add(layerRecord);
+			
+			node.appendChild({nodeType: "gx_layer","leaf":true,"text":"Linjer","layer":layerRecord.getLayer()});
+			console.log("map ",app.mapPanel.map.getCenter(),app.mapPanel.map.getZoom());
+			console.log("mapb",app.mapPanel);
+		    }
+		}}}));
+	}  
+      
 
-                    var record = app.layerSources.ol.createLayerRecord({
-                        type: 'OpenLayers.Layer.WMS',
-                        queryable: true,
-                        args: [
-                            attr.text,
-                            MAPS_IMR_NO,
-                            {
-                                LAYERS: attr.layer,
-                                TRANSPARENT: 'TRUE',
-                                isProfile: profile,
-                                viewparams: sqlParam
-                            },
-                            {
-                                displayInLayerSwitcher: false,
-                                isBaseLayer: false
-                            }
-                        ],
-                        visibility: false
-                    });
-                    gxp.plugins.WMSGetFeatureInfo.prototype.layerParams = ["viewparams"];
 
-                    //app.mapPanel.layers.add(record);
-                    //app.mapPanel.layers.insert(0, [record]);
-                    if (layerList) {
-                        layerList.push(record);
-                    } else {
-                        app.mapPanel.layers.insert(0, [record]);
-                    }
-                    attr.layer = record.getLayer();
-                    return Ext.tree.TreeLoader.prototype.createNode.call(this, attr);
-                },
-                listeners: {
-                    load: function () { // Event fires after nodes are loaded
-                        var firstLayer = layerList.pop();
-                        app.mapPanel.layers.add(layerList); // Add all excepted first layer via add function for speed
-                        app.mapPanel.layers.insert(0, firstLayer); // Add first layer via insert to cause all setup events to fire
+	var floatsCountryTree = new Ext.tree.TreeNode({ "expandable": true, "text": "Floats by country",  "id": "floatCountryList"});
+	jQuery.each(floatsByCountry, function (country, countryFloats) {
+	    var floats = new Ext.tree.TreeNode({ "expandable": true, "text":country.charAt(0) + country.slice(1).toLowerCase(),  "id": country+"List"});
+	    for (var i = 0; i < countryFloats.length; i++) {
+		floats.appendChild(new Ext.tree.TreeNode({ "expandable": true, "text": countryFloats[i].wmo_platform_code,  platform_id: countryFloats[i].id, listeners: {
+		    expand: function ( node, deep, anim ){
+			if (!node.firstChild) {
+			    var layerRecord = createLayerRecord("Punkter",positionLayer,true,false);
+			    layerRecord.getLayer().params.VIEWPARAMS="id_platform:"+node.attributes.platform_id;
+			    //app.mapPanel.layers.insert(0, layerRecord);
+			    app.mapPanel.layers.add(layerRecord);
+			    node.appendChild({nodeType: "gx_layer","leaf":true,"text":"Punkter","layer":layerRecord.getLayer()});
+			    
+			    layerRecord = createLayerRecord("Linjer",pathLayer,false,false);
+			    layerRecord.getLayer().params.VIEWPARAMS="id:"+node.attributes.platform_id;
+			    //app.mapPanel.layers.insert(0, layerRecord);
+			    app.mapPanel.layers.add(layerRecord);
+			    
+			    node.appendChild({nodeType: "gx_layer","leaf":true,"text":"Linjer","layer":layerRecord.getLayer()});
+			    console.log("mapb",app.mapPanel);
+			}}
+		}}));   
+	    }
+	    floatsCountryTree.appendChild(floats);
+	});
+	
+        floatsTree.appendChild(floatsCountryTree);
+	floatsTree.appendChild(flTree);
 
-                        layerList = false; //Sublayers will be added directly
-
-                    }
-                }
-            })
-        }));
-
+	
     });
 });
 
+ 
