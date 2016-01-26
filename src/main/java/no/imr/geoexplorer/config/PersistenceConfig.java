@@ -2,6 +2,8 @@ package no.imr.geoexplorer.config;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import java.beans.PropertyVetoException;
+import no.imr.geoexplorer.dao.ArgoDao;
+import no.imr.geoexplorer.dao.ArgoDaoImpl;
 import org.apache.commons.configuration.ConfigurationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +24,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @author kjetilf
  */
 @Configuration
-@EnableTransactionManagement
 public class PersistenceConfig {
 
     @Autowired
@@ -50,25 +51,11 @@ public class PersistenceConfig {
 
      
 
-    @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory()
-            throws PropertyVetoException, ConfigurationException {
-        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        vendorAdapter.setDatabase(Database.POSTGRESQL);
-        vendorAdapter.setGenerateDdl(false);
-        vendorAdapter.setShowSql(true);
-        LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
-        factory.setJpaVendorAdapter(vendorAdapter);
-        factory.setPackagesToScan("no.imr.geoexplorer.norargo.pojo");
-        factory.setDataSource(datasource());
-        return factory;
+    
+    @Bean ArgoDao getArgoDAO() {
+        return new ArgoDaoImpl();
     }
-
-    @Bean
-    public PlatformTransactionManager transactionManager() {
-        JpaTransactionManager txManager = new JpaTransactionManager();
-        return txManager;
-    }
+    
    
             
 }
