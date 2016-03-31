@@ -28,7 +28,7 @@ NorArgo.Composer  = Ext.extend(GeoExplorer.Composer, {
     modifyPortal: function() {
         var toolbar = this.portalItems[0].tbar;
         this.portalItems[0].tbar = null;
-
+      
         var northPanel = new Ext.Panel({
             border: true,
             region: "north",
@@ -37,11 +37,10 @@ NorArgo.Composer  = Ext.extend(GeoExplorer.Composer, {
             bbar: toolbar,
             id: "topPanelHeading",
             collapseMode: "mini",
-            html:"" +
-                       "<div style=\"float:left;font-size:24px;height:60px;width:900px;text-align:center;padding-top:45px\">NorArgo: en Norsk Argo infrastruktur</div><div style=\"float:right;\"><img src=\"javascript/background_top_trans.jpg\"/></div>"       
+            html:"<div id='titlePanel'>NorArgo: en Norsk Argo infrastruktur</div>"       
         });   
         
         this.portalItems[0].items.push( northPanel );
     }
-    
+      
 });

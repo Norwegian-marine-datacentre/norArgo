@@ -20,14 +20,15 @@ public class ArgoDaoImpl implements ArgoDao {
 
     private JdbcTemplate jdbcTemplate;
 
-    
-     public final String GET_FLOAT_MEASUREMENT_VALUES = " SELECT    depth, " 
+    public final String GET_FLOAT_MEASUREMENT_VALUES = " SELECT    depth, "
             + "round(cast(value as numeric),4) as value "
             + " FROM floats.measurementvaluetype mvt,"
             + " floats.measurementvalues mv,"
             + "  floats.measurement m "
             + "  where id_platform = ? "
             + "  and date = to_date(?,'YYYY-MM-DD') "
+            + " and latitude = cast(? as double precision) "
+            + " and longitude = cast(? as double precision)  "
             + "  and m.id = mv.id_measurement"
             + "  and  mvt.short_name  = ?" //Should really use ID instead of name
             + "  and mvt.id = mv.id_measurementvaluetype "
@@ -45,8 +46,9 @@ public class ArgoDaoImpl implements ArgoDao {
             + "  where id_measurement =  m.id and"
             + "  m.id_platform = ? "
             + " and date = to_date( ? ,'YYYY-MM-DD') "
-            + "  ) " ;
-    
+            + " and latitude = cast(? as double precision) "
+            + " and longitude = cast(? as double precision)  "
+            + "  ) ";
 
     public final String GET_PLATFORM_INFO = "select program,"
             + "country,"
@@ -65,7 +67,7 @@ public class ArgoDaoImpl implements ArgoDao {
             + "  wmo_platform_code,"
             + "  id"
             + "  FROM floats.platform "
-            + "  order by country";
+            + "  order by wmo_platform_code";
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
@@ -77,28 +79,23 @@ public class ArgoDaoImpl implements ArgoDao {
     }
 
     public Map getFloatsByCountry() {
-       HashMap result = new HashMap();
-       List countryList = null;
-       String currentCountry = null;
-        
-        for ( Map<String, Object> floatData : jdbcTemplate.queryForList(GET_ALL_PLATFORMS)) {
-            if (!floatData.get("country").equals(currentCountry)) {
-                if (countryList != null) {
-                   result.put(currentCountry, countryList);
-                }
-               countryList = new ArrayList<Map>();
-               currentCountry = (String) floatData.get("country");
-           }
+        HashMap<String,ArrayList<Map>> result = new HashMap<String,ArrayList<Map>>();
+     
+        String currentCountry = null;
+
+        for (Map<String, Object> floatData : jdbcTemplate.queryForList(GET_ALL_PLATFORMS)) {
+                       
+            currentCountry = (String) floatData.get("country");
+            if (!result.containsKey(currentCountry)) {
+                result.put(currentCountry, new ArrayList<Map>());
+            }
             floatData.remove("country");  //No longer needed
-            countryList.add(floatData);
+            result.get(currentCountry).add(floatData);
         }
-        result.put(currentCountry, countryList);
-  
+
         return result;
     }
 
-    
-  
     public Object getPlatformInfo(String platformID) {
 
         return jdbcTemplate.queryForObject(GET_PLATFORM_INFO,
@@ -117,33 +114,28 @@ public class ArgoDaoImpl implements ArgoDao {
 
                     }
 
-                },platformID,platformID);
+                }, platformID, platformID);
     }
 
-    public Map getPlatformProfile(String platformID, String date) {
-        HashMap result = new HashMap<String,List>();
-      
-        
-        List<Map<String, Object>> results = jdbcTemplate.queryForList(GET_FLOAT_MEASUREMENT_TYPES,platformID,date);
-        
-        
-        for ( Map<String, Object> profileType: results) {
-                   result.put((String) profileType.get("short_name"),
-                    jdbcTemplate.query(GET_FLOAT_MEASUREMENT_VALUES,new RowMapper<List>() {
+    public Map getPlatformProfile(String platformID, String date,String latitude,String longitude ) {
+        HashMap result = new HashMap<String, List>();
 
-                       public List mapRow(ResultSet rs, int i) throws SQLException {
-                           ArrayList data = new ArrayList(2);
-                           data.add(rs.getFloat("depth"));
-                           data.add(rs.getBigDecimal("value"));
-                           return data;
-                       }
-                    },platformID,date,(String) profileType.get("short_name")));
+        List<Map<String, Object>> results = jdbcTemplate.queryForList(GET_FLOAT_MEASUREMENT_TYPES, platformID, date,latitude,longitude);
+
+        for (Map<String, Object> profileType : results) {
+            result.put((String) profileType.get("short_name"),
+                    jdbcTemplate.query(GET_FLOAT_MEASUREMENT_VALUES, new RowMapper<List>() {
+
+                        public List mapRow(ResultSet rs, int i) throws SQLException {
+                            ArrayList data = new ArrayList(2);
+                            data.add(rs.getFloat("depth"));
+                            data.add(rs.getBigDecimal("value"));
+                            return data;
+                        }
+                    }, platformID, date,latitude,longitude, (String) profileType.get("short_name")));
         }
         return result;
 
-        }
-    
-    
+    }
 
-    
 }

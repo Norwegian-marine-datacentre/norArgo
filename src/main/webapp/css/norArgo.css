@@ -1,0 +1,20 @@
+/* 
+    Created on : 15-Mar-2016, 11:22:29
+    Author     : Terry Hannant <a5119>
+*/
+
+.olControlZoomPanel div {
+    background-image:url(../lib/geoexplorer/images/gray/panel/tool-sprites.gif) !important;
+}
+
+.olControlPanPanel div {
+        background-image:url(../lib/geoexplorer/images/gray/panel/tool-sprites.gif) !important;
+}
+
+#titlePanel {
+    background: transparent url(../image/background_top_trans.jpg)  right no-repeat;
+    height:100%;
+    line-height: 120px;
+    font-size:24px;
+    padding-left:300px;
+} 

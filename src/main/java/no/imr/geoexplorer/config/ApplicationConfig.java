@@ -6,13 +6,16 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 /**
  *
  * @author kjetilf
  */
 @Configuration
-public class ApplicationConfig {
+@EnableWebMvc
+public class ApplicationConfig extends WebMvcConfigurerAdapter {
 
 
     @Autowired
