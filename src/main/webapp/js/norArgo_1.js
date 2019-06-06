@@ -340,6 +340,11 @@ Ext.onReady(function () {
     var MAPS_IMR_NO = "http://maps.imr.no/geoserver/wms?";
     var layers = [];
 
+    var maxPeriod = 365;
+    var defaultStartDay  = 60;
+    var defaultEndDay  = 0;
+    
+    
     app.on("ready", function () {
 
         //Inject custom actions
@@ -351,11 +356,68 @@ Ext.onReady(function () {
         toolbar.remove("mapmenu");
         toolbar.remove("loginbutton");
 
+	//Setup dynamic layer
+	var dynamicPeriodPath = createLayerRecord("dynamicPeriodPath", "norargo_period_path_dev", false, true);
+        dynamicPeriodPath.getLayer().params.VIEWPARAMS = "startDay:" +defaultStartDay+";endDay:" +defaultEndDay;
 
-        console.log(toolbar);
-        console.log(toolbar.getComponent(0));
-        console.log(toolbar.items);
+	var dynamicPeriodPoints = createLayerRecord("dynamicPoints", "norargo_period_pos_dev", false, true);
+        dynamicPeriodPoints.getLayer().params.VIEWPARAMS = "startDay:" +defaultStartDay+";endDay:" +defaultEndDay;
 
+	
+	var dynamicPeriodNode;
+
+	var defaultStartDate =new Date((new Date()) - 1000 * 60 * 60 * 24 * defaultStartDay);
+	var dynamicPeriod = {nodeType: "gx_layer",
+			     "leaf": true,
+			     "text":"Floats: "+defaultStartDate.format("d/m/y")+"-"+(new Date().format("d/m/y")),
+			     "layer": dynamicPeriodPath.getLayer(),
+			     "id": "dyna"}
+	
+	
+
+	//Add custom tools
+	toolbar.add(  {xtype: 'tbtext', text: 'Adjust period'}); 
+	toolbar.add( new Ext.slider.MultiSlider({
+	    width: 250,
+	    minValue: 0,
+	    maxValue: maxPeriod,
+	    values: [maxPeriod-defaultStartDay,maxPeriod-defaultEndDay],
+	    calcDaysAgo: function(v) {
+		//return Math.round(maxPeriod-maxPeriod*v/100);
+		return Math.round(maxPeriod-v);
+	    },
+	    listeners: {
+		change: function( slider, newValue, thumb )
+		{
+		    console.log("chnage ");
+		},
+		changecomplete: function( slider, newValue, thumb )
+		{
+		    var startDays = this.calcDaysAgo(this.thumbs[0].value);
+		    var endDays  = this.calcDaysAgo(this.thumbs[1].value);
+		    var now = new Date();
+		    var startDate =new Date(now - 1000 * 60 * 60 * 24 * startDays);
+		    var endDate = new Date(now - 1000 * 60 * 60 * 24 * endDays);
+		    
+		    
+		    
+		    
+		    dynamicPeriodPath.getLayer().params.VIEWPARAMS = "startDay:"+startDays+";endDay:" +endDays;
+		    dynamicPeriodPath.getLayer().redraw();
+		    dynamicPeriodPoints.getLayer().params.VIEWPARAMS = "startDay:"+startDays+";endDay:" +endDays;
+		    dynamicPeriodPoints.getLayer().redraw();
+		    dynamicPeriodNode.setText("Floats: "+startDate.format("d/m/y")+"-"+endDate.format("d/m/y"));
+		}
+
+	    },
+	    plugins: new Ext.slider.Tip({
+		getText: function(thumb){
+		    var daysAgo =thumb.slider.calcDaysAgo(thumb.value);
+		    return (daysAgo > 0 )?String.format('{0} days ago', daysAgo):"Today";
+		}
+	    })
+	}));
+	
         var treeRoot = Ext.getCmp('layers').getRootNode();
         var floatsTree = new Ext.tree.TreeNode({
             text: 'NorArgo',
@@ -368,9 +430,14 @@ Ext.onReady(function () {
         layer = createLayerRecord("Alle floats", headLayer, true, true);
         app.mapPanel.layers.add(layer);
         node = {nodeType: "gx_layer", "leaf": true, "text": "Alle floats", "layer": layer.getLayer(), "id": "sist60_point"}
-
         floatsTree.appendChild(node);
 
+
+
+        app.mapPanel.layers.add(dynamicPeriodPath);
+	app.mapPanel.layers.add(dynamicPeriodPoints);
+        dynamicPeriodNode  = floatsTree.appendChild(dynamicPeriod);
+	
         var defaultDaysLayer = createLayerRecord("Siste 60 dager path", tailLayer, true, true);
         app.mapPanel.layers.add(defaultDaysLayer);
         node = {nodeType: "gx_layer", "leaf": true, "text": "Siste 60 dager", "layer": defaultDaysLayer.getLayer(), "id": "sist60"}
@@ -454,5 +521,7 @@ Ext.onReady(function () {
 
     });
 });
+
+
 
 
