@@ -9,7 +9,7 @@
         <link rel="stylesheet" type="text/css" href="lib/geoexplorer/ext/ext-all.css">
         <link rel="stylesheet" type="text/css" href="lib/geoexplorer/ext/xtheme-gray.css">
         <script type="text/javascript" src="lib/geoexplorer/ext/ext-base.js"></script>
-        <script type="text/javascript" src="lib/geoexplorer/ext/ext-all-debug-w-comments.js"></script>
+        <script type="text/javascript" src="lib/geoexplorer/ext/ext-all.js"></script>
         
         
         <meta http-equiv="X-UA-Compatible" content="IE=IE8" >
@@ -37,10 +37,14 @@
         
     </head>
     <script>
+      var geoserverURL="${geoserverURL}";
         var headLayer="${headLayer}";
         var tailLayer="${tailLayer}";
         var positionLayer="${positionLayer}";
         var pathLayer="${pathLayer}";
+        var dynamicRangePathLayer="${dynamicRangePathLayer}";
+        var dynamicRangePointLayer="${dynamicRangePointLayer}";
+        
         var floatList=${floatList};
         var floatsByCountry=${floatsByCountry};
         
