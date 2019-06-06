@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,10 +47,15 @@ public class ArgoMap {
     @RequestMapping("/map")
     public ModelAndView map(HttpServletResponse resp)  {
         ModelAndView modelView = new ModelAndView("norArgo");
+	modelView.addObject("geoserverURL",configuration.getString("geoserver.url"));
         modelView.addObject("headLayer",configuration.getString("layer.currentActivePostion"));
         modelView.addObject("tailLayer",configuration.getString("layer.currentActivePath"));
         modelView.addObject("positionLayer",configuration.getString("layer.allPositions"));
         modelView.addObject("pathLayer",configuration.getString("layer.allPaths"));
+        modelView.addObject("dynamicRangePathLayer",configuration.getString("layer.dynamicRangePath"));
+        modelView.addObject("dynamicRangePointLayer",configuration.getString("layer.dynamicRangePoint"));
+	
+        
         try {
             modelView.addObject("floatList",new ObjectMapper().writeValueAsString(argoDao.getFloats()));
              modelView.addObject("floatsByCountry",new ObjectMapper().writeValueAsString(argoDao.getFloatsByCountry()));
@@ -75,16 +81,35 @@ public class ArgoMap {
             ) {
         return argoDao.getPlatformInfo(platformID);
     }
+    
+       
+    @RequestMapping(value="/norArgo/platform/metaData", method = RequestMethod.GET)
+    public @ResponseBody Object getPlatformAndMeaurementMetadata(@RequestParam("id") String platformID
+            ) {
+         
+            HashMap result = new HashMap();
+            result.put("platform",argoDao.getPlatformInfo(platformID));
+            result.put("measurements",argoDao.getMeasurementInfo(platformID));
 
-    @RequestMapping(value="/norArgo/platformMeaurement", method = RequestMethod.GET)
+                    
+        return result;
+    }
+
+  /** @RequestMapping(value="/norArgo/platformMeaurement", method = RequestMethod.GET)
     public @ResponseBody Map getPlatformMeaurementValue(@RequestParam("id") String platformID,
                 @RequestParam("date") String date,
                 @RequestParam("latitude") String latitude,
                 @RequestParam("longitude") String longitude
                 ) {
         return argoDao.getPlatformProfile(platformID,date,latitude,longitude);
-    }
+    }**/
 
+    @RequestMapping(value="/norArgo/measurement", method = RequestMethod.GET)
+    public @ResponseBody Map getMeaurementValue(@RequestParam("id") String id
+                ) {
+        return argoDao.getPlatformProfile(id);
+    }
+    
     
     @RequestMapping(value = "/Proxy", method = RequestMethod.GET)
     public void simpleProxy(@RequestParam(value = "url") String sourceURL,
@@ -103,7 +128,9 @@ public class ArgoMap {
                 IOUtils.copy(input, response.getOutputStream());
                 input.close();
             } catch (IOException ex) {
-                LOG.error("Error proxying " + sourceURL);
+                
+                LOG.error("Error proxying " + sourceURL,ex);
+                
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
         } else {

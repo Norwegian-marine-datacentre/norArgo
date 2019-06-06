@@ -14,7 +14,9 @@ public interface ArgoDao {
     public Map getFloatsByCountry();
 
     public Object getPlatformInfo(String platformID);
+    public Object getMeasurementInfo(String platformID);
 
-    public Map getPlatformProfile(String platformID, String date,String latitude,String longitude);
+    public Map getPlatformProfile(String measurementID);
 
+    
 }
