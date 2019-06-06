@@ -12,9 +12,15 @@
 }
 
 #titlePanel {
-    background: transparent url(../image/background_top_trans.jpg)  right no-repeat;
+    background: transparent url(../image/logo_panel1.png) center no-repeat;
+
     height:100%;
-    line-height: 120px;
-    font-size:24px;
-    padding-left:300px;
+    width:100%;
+    background-color: #BFD9E7;
+    background-size: contain;
 } 
+
+
+.map-overlay {
+    display:none;
+}
