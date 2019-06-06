@@ -37,7 +37,8 @@ NorArgo.Composer  = Ext.extend(GeoExplorer.Composer, {
             bbar: toolbar,
             id: "topPanelHeading",
             collapseMode: "mini",
-            html:"<div id='titlePanel'>NorArgo: en Norsk Argo infrastruktur</div>"       
+            xhtml:"<div id='titlePanel'>NorArgo: en Norsk Argo infrastruktur</div>",
+	    html:"<div id='titlePanel'></div>"
         });   
         
         this.portalItems[0].items.push( northPanel );
