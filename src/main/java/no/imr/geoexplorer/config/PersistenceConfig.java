@@ -1,6 +1,7 @@
 package no.imr.geoexplorer.config;
 
-import com.mchange.v2.c3p0.ComboPooledDataSource;
+import javax.sql.DataSource;
+import org.apache.commons.dbcp.BasicDataSource;
 import java.beans.PropertyVetoException;
 import no.imr.geoexplorer.dao.ArgoDao;
 import no.imr.geoexplorer.dao.ArgoDaoImpl;
@@ -22,25 +23,19 @@ public class PersistenceConfig {
     @Autowired
     private org.apache.commons.configuration.Configuration configuration;
    
-    /**
-     * Datasource pool.
-     *
-     * @return Pooled data source.
-     */
-     @Bean(name = "dataSource")
-     public ComboPooledDataSource datasource() throws PropertyVetoException {
-         ComboPooledDataSource datasource = new ComboPooledDataSource();
-         datasource.setAcquireIncrement(configuration.getInt("jdbc.acquireIncrement"));
-         datasource.setIdleConnectionTestPeriod(configuration.getInt("jdbc.idleConnectionTestPeriod"));
-         datasource.setInitialPoolSize(configuration.getInt("jdbc.initialPoolSize"));
-         datasource.setMinPoolSize(configuration.getInt("jdbc.minPoolSize"));
-         datasource.setMaxPoolSize(configuration.getInt("jdbc.maxPoolSize"));
-         datasource.setDriverClass(configuration.getString("jdbc.driver"));
-         datasource.setUser(configuration.getString("jdbc.user"));
-         datasource.setPassword(configuration.getString("jdbc.password"));
-         datasource.setJdbcUrl(configuration.getString("jdbc.url"));
-         return datasource;
-     }
+    @Bean
+    public DataSource dataSource() {
+        BasicDataSource dataSource = new BasicDataSource();
+        dataSource.setDriverClassName(configuration.getString("jdbc.driver"));
+        dataSource.setUrl(configuration.getString("jdbc.url"));
+        dataSource.setUsername(configuration.getString("jdbc.user"));
+        dataSource.setPassword(configuration.getString("jdbc.password"));
+        //dataSource.setMaxWait(configuration.getLong("jdbc.maxWait"));
+        return dataSource;
+    }
+
+    
+    
 
     
     @Bean ArgoDao getArgoDAO() {
