@@ -22,7 +22,13 @@
         <repository>
             <id>nexus-release</id>
             <name>Nexus release repository for IMR</name>
-            <url>http://build.imr.no/nexus/content/repositories/releases/</url>
+            <url>http://build.imr.no/nexus/repository/releases/</url>
+        </repository>
+
+	<repository>
+            <id>thirdparty</id>
+            <name>Nexus release repository for IMR</name>
+            <url>http://build.imr.no/nexus/repository/thirdparty/</url>
         </repository>
 
         
@@ -35,14 +41,7 @@
             </snapshots>
         </repository>
 
-        <repository>
-            <id>opengeo</id>
-            <name>OpenGeo Maven Repository</name>
-            <url>http://repo.opengeo.org/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
+ 
         <repository>
             <id>osgeo</id>
             <name>Open Source Geospatial Foundation Repository</name>
@@ -64,11 +63,11 @@
     </repositories>
 
     <pluginRepositories>
-        <pluginRepository>
-            <id>opengeo</id>
-            <name>OpenGeo Maven Repository</name>
-            <url>http://repo.opengeo.org</url>
-        </pluginRepository>
+      <pluginRepository>
+        <id>thirdparty</id>
+        <name>Nexus release repository for IMR</name>
+        <url>http://build.imr.no/nexus/repository/thirdparty/</url>
+      </pluginRepository>
     </pluginRepositories>
 
     <dependencies>
